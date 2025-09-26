@@ -1,10 +1,13 @@
-import { Card, CardContent, Typography, Box, Chip } from "@mui/material";
+import { Card, CardContent, Typography, Box, Chip, Modal, IconButton } from "@mui/material";
 import DiamondIcon from "@mui/icons-material/Diamond";
+import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
 
 const ItemCard = ({ item }: { item: any }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImageIndex, setModalImageIndex] = useState(0);
 
 
   // Auto-play on hover
@@ -30,6 +33,34 @@ const ItemCard = ({ item }: { item: any }) => {
       }
     };
   }, [isHovered, item.images]);
+
+  // Modal auto-play
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    
+    if (isModalOpen && item.images && item.images.length > 1) {
+      interval = setInterval(() => {
+        setModalImageIndex((prev) => (prev + 1) % item.images.length);
+      }, 2000); // Slightly slower for modal viewing
+    }
+    
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isModalOpen, item.images]);
+
+  const handleImageClick = () => {
+    if (item.images && item.images.length > 0) {
+      setModalImageIndex(currentImageIndex);
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <Card
@@ -115,6 +146,7 @@ const ItemCard = ({ item }: { item: any }) => {
             component="img"
             src={item.images[currentImageIndex]}
             alt={item.itemName || `${item.materialName} ${item.categoryName}`}
+            onClick={handleImageClick}
             sx={{
               maxWidth: "100%",
               maxHeight: "100%",
@@ -124,7 +156,12 @@ const ItemCard = ({ item }: { item: any }) => {
               objectPosition: "center center",
               position: "relative",
               zIndex: 1,
-              transition: "all 0.4s ease"
+              transition: "all 0.4s ease",
+              cursor: "pointer",
+              "&:hover": {
+                transform: "scale(1.05)",
+                filter: "brightness(1.1)",
+              }
             }}
           />
         ) : null}
@@ -374,9 +411,144 @@ const ItemCard = ({ item }: { item: any }) => {
           </Box>
         </Box>
         
-      </CardContent>
-    </Card>
-  );
-};
+          </CardContent>
 
-export default ItemCard;
+          {/* Image Modal */}
+          <Modal
+            open={isModalOpen}
+            onClose={handleModalClose}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              "& .MuiBackdrop-root": {
+                backgroundColor: "rgba(0, 0, 0, 0.9)",
+                backdropFilter: "blur(10px)",
+              }
+            }}
+          >
+            <Box
+              sx={{
+                position: "relative",
+                maxWidth: "90vw",
+                maxHeight: "90vh",
+                width: "auto",
+                height: "auto",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                outline: "none",
+              }}
+            >
+              {/* Close Button */}
+              <IconButton
+                onClick={handleModalClose}
+                sx={{
+                  position: "absolute",
+                  top: -50,
+                  right: -50,
+                  color: "#fff",
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  zIndex: 10,
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 193, 7, 0.9)",
+                    color: "#000",
+                  }
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+
+              {/* Large Image */}
+              {item.images && item.images.length > 0 && (
+                <Box
+                  component="img"
+                  src={item.images[modalImageIndex]}
+                  alt={item.itemName || `${item.materialName} ${item.categoryName}`}
+                  sx={{
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    width: "auto",
+                    height: "auto",
+                    objectFit: "contain",
+                    borderRadius: "12px",
+                    boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+                    transition: "all 0.3s ease",
+                  }}
+                />
+              )}
+
+              {/* Modal Indicators */}
+              {item.images && item.images.length > 1 && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    bottom: -60,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    display: "flex",
+                    gap: 1,
+                    zIndex: 10,
+                  }}
+                >
+                  {item.images.map((_: any, index: number) => (
+                    <Box
+                      key={index}
+                      onClick={() => setModalImageIndex(index)}
+                      sx={{
+                        width: "12px",
+                        height: "12px",
+                        borderRadius: "50%",
+                        backgroundColor: modalImageIndex === index ? "#ffc107" : "rgba(255, 255, 255, 0.5)",
+                        border: modalImageIndex === index ? "2px solid #fff" : "1px solid rgba(255, 255, 255, 0.3)",
+                        cursor: "pointer",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: modalImageIndex === index ? "#ff8f00" : "rgba(255, 255, 255, 0.8)",
+                          transform: "scale(1.2)"
+                        }
+                      }}
+                    />
+                  ))}
+                </Box>
+              )}
+
+              {/* Auto-play indicator for modal */}
+              {item.images && item.images.length > 1 && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: -50,
+                    left: -50,
+                    background: "rgba(0, 0, 0, 0.7)",
+                    color: "#fff",
+                    borderRadius: "12px",
+                    px: 1.5,
+                    py: 0.5,
+                    fontSize: "0.8rem",
+                    fontWeight: "bold",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                    zIndex: 10,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: "8px",
+                      height: "8px",
+                      borderRadius: "50%",
+                      backgroundColor: "#ffc107",
+                      animation: "pulse 1.5s ease-in-out infinite"
+                    }}
+                  />
+                  Auto Play
+                </Box>
+              )}
+            </Box>
+          </Modal>
+        </Card>
+      );
+    };
+
+    export default ItemCard;
