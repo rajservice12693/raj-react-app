@@ -21,18 +21,38 @@ const ItemCard = ({ item }: { item: any }) => {
 
   // Auto-play on hover
   useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    
     if (isHovered && item.images && item.images.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentImageIndex((prev) => (prev + 1) % item.images.length);
-      }, 2000);
-      return () => clearInterval(interval);
+      console.log('Starting carousel auto-play for item:', item.itemName || item.materialName);
+      interval = setInterval(() => {
+        setCurrentImageIndex((prev) => {
+          const next = (prev + 1) % item.images.length;
+          console.log('Auto-playing to image:', next);
+          return next;
+        });
+      }, 1500); // Faster auto-play for better UX
+    } else {
+      console.log('Stopping carousel auto-play');
     }
+    
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
   }, [isHovered, item.images]);
 
   return (
     <Card
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => {
+        console.log('Mouse entered card:', item.itemName || item.materialName);
+        setIsHovered(true);
+      }}
+      onMouseLeave={() => {
+        console.log('Mouse left card:', item.itemName || item.materialName);
+        setIsHovered(false);
+      }}
       sx={{
         height: "100%",
         maxHeight: "380px",
@@ -119,6 +139,35 @@ const ItemCard = ({ item }: { item: any }) => {
             <DiamondIcon className="diamond-icon" />
           </Box>
         )}
+
+        {/* Auto-play indicator */}
+        {isHovered && item.images && item.images.length > 1 && (
+          <Box sx={{
+            position: "absolute",
+            top: "8px",
+            right: "8px",
+            zIndex: 3,
+            background: "rgba(0, 0, 0, 0.7)",
+            color: "#fff",
+            borderRadius: "12px",
+            px: 1,
+            py: 0.5,
+            fontSize: "0.7rem",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5
+          }}>
+            <Box sx={{
+              width: "6px",
+              height: "6px",
+              borderRadius: "50%",
+              backgroundColor: "#ffc107",
+              animation: "pulse 1.5s ease-in-out infinite"
+            }} />
+            Auto
+          </Box>
+        )}
         
         {/* Carousel Navigation Arrows */}
         {item.images && item.images.length > 1 && (
@@ -134,21 +183,23 @@ const ItemCard = ({ item }: { item: any }) => {
                 left: 8,
                 top: "50%",
                 transform: "translateY(-50%)",
-                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
                 color: "#d4af37",
                 zIndex: 4,
-                opacity: 0,
+                opacity: isHovered ? 1 : 0,
                 transition: "all 0.3s ease",
-                width: "32px",
-                height: "32px",
+                width: "36px",
+                height: "36px",
+                border: "2px solid rgba(255, 193, 7, 0.3)",
                 "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 1)",
+                  backgroundColor: "rgba(255, 193, 7, 0.9)",
+                  color: "#fff",
                   transform: "translateY(-50%) scale(1.1)",
                 },
-                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                boxShadow: "0 4px 15px rgba(0,0,0,0.25)",
               }}
             >
-              <ChevronLeft sx={{ fontSize: 18 }} />
+              <ChevronLeft sx={{ fontSize: 20 }} />
             </IconButton>
             
             <IconButton
@@ -162,21 +213,23 @@ const ItemCard = ({ item }: { item: any }) => {
                 right: 8,
                 top: "50%",
                 transform: "translateY(-50%)",
-                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
                 color: "#d4af37",
                 zIndex: 4,
-                opacity: 0,
+                opacity: isHovered ? 1 : 0,
                 transition: "all 0.3s ease",
-                width: "32px",
-                height: "32px",
+                width: "36px",
+                height: "36px",
+                border: "2px solid rgba(255, 193, 7, 0.3)",
                 "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 1)",
+                  backgroundColor: "rgba(255, 193, 7, 0.9)",
+                  color: "#fff",
                   transform: "translateY(-50%) scale(1.1)",
                 },
-                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                boxShadow: "0 4px 15px rgba(0,0,0,0.25)",
               }}
             >
-              <ChevronRight sx={{ fontSize: 18 }} />
+              <ChevronRight sx={{ fontSize: 20 }} />
             </IconButton>
           </>
         )}
@@ -193,7 +246,7 @@ const ItemCard = ({ item }: { item: any }) => {
               display: "flex",
               gap: 0.5,
               zIndex: 3,
-              opacity: 0,
+              opacity: isHovered ? 1 : 0,
               transition: "all 0.3s ease"
             }}
           >
