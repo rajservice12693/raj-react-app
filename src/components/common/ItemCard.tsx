@@ -1,23 +1,11 @@
-import { Card, CardContent, Typography, Box, Chip, IconButton } from "@mui/material";
+import { Card, CardContent, Typography, Box, Chip } from "@mui/material";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
 const ItemCard = ({ item }: { item: any }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
-  const nextImage = () => {
-    if (item.images && item.images.length > 0) {
-      setCurrentImageIndex((prev) => (prev + 1) % item.images.length);
-    }
-  };
-
-  const prevImage = () => {
-    if (item.images && item.images.length > 0) {
-      setCurrentImageIndex((prev) => (prev - 1 + item.images.length) % item.images.length);
-    }
-  };
 
   // Auto-play on hover
   useEffect(() => {
@@ -97,12 +85,6 @@ const ItemCard = ({ item }: { item: any }) => {
         className="jewelry-image"
         sx={{
           height: "150px",
-          background: item.images && item.images.length > 0 
-            ? `url(${item.images[currentImageIndex]})` 
-            : "linear-gradient(135deg, #fff8e1 0%, #ffecb3 30%, #ffe0b2 70%, #fff3e0 100%)",
-          backgroundSize: "cover",
-          backgroundPosition: "center center",
-          backgroundRepeat: "no-repeat",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -117,9 +99,25 @@ const ItemCard = ({ item }: { item: any }) => {
             right: 0,
             bottom: 0,
             background: item.images && item.images.length > 0 
+              ? `url(${item.images[currentImageIndex]})` 
+              : "linear-gradient(135deg, #fff8e1 0%, #ffecb3 30%, #ffe0b2 70%, #fff3e0 100%)",
+            backgroundSize: "cover",
+            backgroundPosition: "center center",
+            backgroundRepeat: "no-repeat",
+            zIndex: 1
+          },
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: item.images && item.images.length > 0 
               ? "linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.05) 100%)"
               : "radial-gradient(circle at 30% 20%, rgba(255, 193, 7, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255, 143, 0, 0.08) 0%, transparent 50%)",
-            opacity: 0.6
+            opacity: 0.6,
+            zIndex: 2
           }
         }}
       >
@@ -127,7 +125,7 @@ const ItemCard = ({ item }: { item: any }) => {
         {(!item.images || item.images.length === 0) && (
           <Box sx={{ 
             position: "relative",
-            zIndex: 2,
+            zIndex: 3,
             "& .diamond-icon": {
               color: "#ffc107",
               fontSize: "2.2rem",
@@ -146,7 +144,7 @@ const ItemCard = ({ item }: { item: any }) => {
             position: "absolute",
             top: "8px",
             right: "8px",
-            zIndex: 3,
+            zIndex: 4,
             background: "rgba(0, 0, 0, 0.7)",
             color: "#fff",
             borderRadius: "12px",
@@ -169,70 +167,6 @@ const ItemCard = ({ item }: { item: any }) => {
           </Box>
         )}
         
-        {/* Carousel Navigation Arrows */}
-        {item.images && item.images.length > 1 && (
-          <>
-            <IconButton
-              className="carousel-arrows"
-              onClick={(e) => {
-                e.stopPropagation();
-                prevImage();
-              }}
-              sx={{
-                position: "absolute",
-                left: 8,
-                top: "50%",
-                transform: "translateY(-50%)",
-                backgroundColor: "rgba(255, 255, 255, 0.95)",
-                color: "#d4af37",
-                zIndex: 4,
-                opacity: isHovered ? 1 : 0,
-                transition: "all 0.3s ease",
-                width: "36px",
-                height: "36px",
-                border: "2px solid rgba(255, 193, 7, 0.3)",
-                "&:hover": {
-                  backgroundColor: "rgba(255, 193, 7, 0.9)",
-                  color: "#fff",
-                  transform: "translateY(-50%) scale(1.1)",
-                },
-                boxShadow: "0 4px 15px rgba(0,0,0,0.25)",
-              }}
-            >
-              <ChevronLeft sx={{ fontSize: 20 }} />
-            </IconButton>
-            
-            <IconButton
-              className="carousel-arrows"
-              onClick={(e) => {
-                e.stopPropagation();
-                nextImage();
-              }}
-              sx={{
-                position: "absolute",
-                right: 8,
-                top: "50%",
-                transform: "translateY(-50%)",
-                backgroundColor: "rgba(255, 255, 255, 0.95)",
-                color: "#d4af37",
-                zIndex: 4,
-                opacity: isHovered ? 1 : 0,
-                transition: "all 0.3s ease",
-                width: "36px",
-                height: "36px",
-                border: "2px solid rgba(255, 193, 7, 0.3)",
-                "&:hover": {
-                  backgroundColor: "rgba(255, 193, 7, 0.9)",
-                  color: "#fff",
-                  transform: "translateY(-50%) scale(1.1)",
-                },
-                boxShadow: "0 4px 15px rgba(0,0,0,0.25)",
-              }}
-            >
-              <ChevronRight sx={{ fontSize: 20 }} />
-            </IconButton>
-          </>
-        )}
         
         {/* Image indicators */}
         {item.images && item.images.length > 1 && (
@@ -245,7 +179,7 @@ const ItemCard = ({ item }: { item: any }) => {
               transform: "translateX(-50%)",
               display: "flex",
               gap: 0.5,
-              zIndex: 3,
+              zIndex: 4,
               opacity: isHovered ? 1 : 0,
               transition: "all 0.3s ease"
             }}
