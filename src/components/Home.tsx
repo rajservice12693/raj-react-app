@@ -2,7 +2,6 @@ import {
   Box,
   Typography,
   Grid,
-  Container,
   FormControlLabel,
   Paper,
   List,
@@ -300,7 +299,11 @@ const Home = () => {
       {/* </Container> */}
 
       {/* Elegant Filter Sidebar and Main Content */}
-      <Container maxWidth="xl" sx={{ py: { xs: 3, sm: 4, md: 6 } }}>
+      <Box sx={{ 
+        py: { xs: 3, sm: 4, md: 6 },
+        px: { xs: 2, sm: 3, md: 4 },
+        maxWidth: "100%"
+      }}>
         <Box sx={{ display: "flex", gap: { xs: 2, sm: 3, md: 4 }, flexDirection: { xs: "column", lg: "row" } }}>
           {/* Elegant Filter Sidebar */}
           <Paper 
@@ -333,28 +336,52 @@ const Home = () => {
               <Box sx={{ 
                 display: "flex", 
                 alignItems: "center", 
-                gap: 1.5, 
+                justifyContent: "space-between",
                 mb: 4,
                 pb: 2,
                 borderBottom: "1px solid rgba(212, 175, 55, 0.1)"
               }}>
-                <Box sx={{
-                  p: 1,
-                  borderRadius: "12px",
-                  background: "linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <FilterListIcon sx={{ color: "#d4af37", fontSize: 20 }} />
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                  <Box sx={{
+                    p: 1,
+                    borderRadius: "12px",
+                    background: "linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}>
+                    <FilterListIcon sx={{ color: "#d4af37", fontSize: 20 }} />
+                  </Box>
+                  <Typography variant="h6" sx={{ 
+                    fontWeight: "600", 
+                    color: "#2c3e50",
+                    letterSpacing: "0.02em"
+                  }}>
+                    Refine Your Search
+                  </Typography>
                 </Box>
-                <Typography variant="h6" sx={{ 
-                  fontWeight: "600", 
-                  color: "#2c3e50",
-                  letterSpacing: "0.02em"
-                }}>
-                  Refine Your Search
-                </Typography>
+                
+                <Button
+                  onClick={clearFilters}
+                  size="small"
+                  sx={{
+                    color: "#d4af37",
+                    fontSize: "0.75rem",
+                    fontWeight: "500",
+                    textTransform: "none",
+                    textDecoration: "underline",
+                    minWidth: "auto",
+                    px: 1,
+                    py: 0.5,
+                    "&:hover": {
+                      color: "#b8860b",
+                      backgroundColor: "rgba(212, 175, 55, 0.05)",
+                      textDecoration: "none"
+                    }
+                  }}
+                >
+                  Clear All
+                </Button>
               </Box>
 
               {/* Elegant Search Filter */}
@@ -596,24 +623,6 @@ const Home = () => {
                 </AccordionDetails>
               </Accordion>
 
-              {/* Clear Filters Button */}
-              <Button
-                fullWidth
-                variant="outlined"
-                onClick={clearFilters}
-                sx={{
-                  borderColor: "#ffc107",
-                  color: "#ffc107",
-                  borderRadius: "12px",
-                  py: 1,
-                  "&:hover": {
-                    borderColor: "#ff8f00",
-                    backgroundColor: "rgba(255, 193, 7, 0.1)"
-                  }
-                }}
-              >
-                Clear All Filters
-              </Button>
             </Box>
           </Paper>
 
@@ -789,7 +798,7 @@ const Home = () => {
             </Paper>
           </Box>
         </Box>
-      </Container>
+      </Box>
       
     </>
   );
