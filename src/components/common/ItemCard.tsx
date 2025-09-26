@@ -1,10 +1,11 @@
 import { Card, CardContent, Typography, Box, Chip, IconButton } from "@mui/material";
 import DiamondIcon from "@mui/icons-material/Diamond";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 
 const ItemCard = ({ item }: { item: any }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
   const nextImage = () => {
     if (item.images && item.images.length > 0) {
@@ -18,8 +19,20 @@ const ItemCard = ({ item }: { item: any }) => {
     }
   };
 
+  // Auto-play on hover
+  useEffect(() => {
+    if (isHovered && item.images && item.images.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % item.images.length);
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [isHovered, item.images]);
+
   return (
     <Card
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       sx={{
         height: "100%",
         maxHeight: "380px",
@@ -41,6 +54,9 @@ const ItemCard = ({ item }: { item: any }) => {
             transform: "scale(1.02)",
           },
           "& .carousel-arrows": {
+            opacity: 1,
+          },
+          "& .carousel-indicators": {
             opacity: 1,
           }
         },
@@ -65,7 +81,7 @@ const ItemCard = ({ item }: { item: any }) => {
             ? `url(${item.images[currentImageIndex]})` 
             : "linear-gradient(135deg, #fff8e1 0%, #ffecb3 30%, #ffe0b2 70%, #fff3e0 100%)",
           backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
           display: "flex",
           alignItems: "center",
@@ -123,16 +139,16 @@ const ItemCard = ({ item }: { item: any }) => {
                 zIndex: 4,
                 opacity: 0,
                 transition: "all 0.3s ease",
-                width: "28px",
-                height: "28px",
+                width: "32px",
+                height: "32px",
                 "&:hover": {
                   backgroundColor: "rgba(255, 255, 255, 1)",
                   transform: "translateY(-50%) scale(1.1)",
                 },
-                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
               }}
             >
-              <ChevronLeft sx={{ fontSize: 16 }} />
+              <ChevronLeft sx={{ fontSize: 18 }} />
             </IconButton>
             
             <IconButton
@@ -151,40 +167,55 @@ const ItemCard = ({ item }: { item: any }) => {
                 zIndex: 4,
                 opacity: 0,
                 transition: "all 0.3s ease",
-                width: "28px",
-                height: "28px",
+                width: "32px",
+                height: "32px",
                 "&:hover": {
                   backgroundColor: "rgba(255, 255, 255, 1)",
                   transform: "translateY(-50%) scale(1.1)",
                 },
-                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
               }}
             >
-              <ChevronRight sx={{ fontSize: 16 }} />
+              <ChevronRight sx={{ fontSize: 18 }} />
             </IconButton>
           </>
         )}
         
         {/* Image indicators */}
         {item.images && item.images.length > 1 && (
-          <Box sx={{
-            position: "absolute",
-            bottom: "8px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            gap: 0.5,
-            zIndex: 3
-          }}>
+          <Box 
+            className="carousel-indicators"
+            sx={{
+              position: "absolute",
+              bottom: "8px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              display: "flex",
+              gap: 0.5,
+              zIndex: 3,
+              opacity: 0,
+              transition: "all 0.3s ease"
+            }}
+          >
             {item.images.map((_: any, index: number) => (
               <Box
                 key={index}
                 sx={{
-                  width: "6px",
-                  height: "6px",
+                  width: "8px",
+                  height: "8px",
                   borderRadius: "50%",
-                  backgroundColor: currentImageIndex === index ? "#ffc107" : "rgba(255, 255, 255, 0.5)",
-                  transition: "all 0.3s ease"
+                  backgroundColor: currentImageIndex === index ? "#ffc107" : "rgba(255, 255, 255, 0.6)",
+                  border: currentImageIndex === index ? "2px solid #fff" : "1px solid rgba(255, 255, 255, 0.3)",
+                  transition: "all 0.3s ease",
+                  cursor: "pointer",
+                  "&:hover": {
+                    backgroundColor: currentImageIndex === index ? "#ff8f00" : "rgba(255, 255, 255, 0.8)",
+                    transform: "scale(1.2)"
+                  }
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentImageIndex(index);
                 }}
               />
             ))}
@@ -259,7 +290,7 @@ const ItemCard = ({ item }: { item: any }) => {
           variant="h6" 
           sx={{ 
             fontWeight: "600",
-            fontSize: "0.95rem",
+            fontSize: "0.8rem",
             color: "#3e2723",
             mb: 0.8,
             lineHeight: 1.3,
