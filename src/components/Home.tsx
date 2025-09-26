@@ -164,7 +164,7 @@ const Home = () => {
         marginRight: { xs: 2, sm: 3, md: 4 },
         marginBottom: { xs: 2, sm: 3, md: 4 },
         padding: 0,
-        position: "relative",
+          position: "relative",
         zIndex: 1,
         width: "auto",
         '@media (max-width: 768px)': {
@@ -262,7 +262,7 @@ const Home = () => {
               gap: 1.5,
             }}
           >
-            {categories.map((category) => (
+            {categoryOptions.map((category) => (
               <Chip
                 key={category}
                 label={category === "All" ? "✨ All" : `💎 ${category}`}
@@ -308,11 +308,11 @@ const Home = () => {
           {/* Elegant Filter Sidebar */}
           <Paper 
             elevation={0} 
-            sx={{ 
+        sx={{
               width: { xs: "100%", lg: "320px" },
               height: "fit-content",
               background: "linear-gradient(135deg, #ffffff 0%, #faf9f7 50%, #f5f2ed 100%)",
-              borderRadius: "24px",
+          borderRadius: "24px",
               border: "1px solid rgba(212, 175, 55, 0.1)",
               boxShadow: "0 12px 40px rgba(0,0,0,0.08), 0 4px 16px rgba(212, 175, 55, 0.1)",
               position: "relative",
@@ -337,7 +337,7 @@ const Home = () => {
                 display: "flex", 
                 alignItems: "center", 
                 justifyContent: "space-between",
-                mb: 4,
+          mb: 4,
                 pb: 2,
                 borderBottom: "1px solid rgba(212, 175, 55, 0.1)"
               }}>
@@ -430,9 +430,9 @@ const Home = () => {
                     }
                   }}
                 />
-              </Box>
+                  </Box>
 
-              {/* Elegant Category Filter */}
+                  {/* Elegant Category Filter */}
               <Accordion 
                 defaultExpanded 
                 sx={{ 
@@ -658,7 +658,7 @@ const Home = () => {
                 borderRadius: "24px",
                 boxShadow: "0 12px 40px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(212, 175, 55, 0.1)",
                 border: "1px solid rgba(212, 175, 55, 0.1)",
-                backdropFilter: "blur(10px)",
+          backdropFilter: "blur(10px)",
                 position: "relative",
                 overflow: "hidden",
                 "&::before": {
@@ -675,24 +675,24 @@ const Home = () => {
               }}
             >
               <Box sx={{ textAlign: "center", mb: 5 }}>
-                <Typography
+          <Typography
                   variant="h4"
-                  sx={{
+            sx={{
                     fontWeight: "400",
                     background: "linear-gradient(135deg, #d4af37 0%, #ffc107 25%, #ff8f00 50%, #d4af37 75%, #b8860b 100%)",
-                    backgroundClip: "text",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
                     mb: 2,
                     letterSpacing: "0.02em",
                     textShadow: "0 2px 4px rgba(212, 175, 55, 0.2)",
-                  }}
-                >
-                  {selectedCategory === "All"
+            }}
+          >
+            {selectedCategory === "All"
                     ? "✨ Our Exquisite Collection"
-                    : `💎 ${selectedCategory} Collection`}
-                </Typography>
-                <Typography
+              : `💎 ${selectedCategory} Collection`}
+          </Typography>
+          <Typography
                   variant="body1"
                   sx={{ 
                     color: "#8d6e63", 
@@ -700,10 +700,10 @@ const Home = () => {
                     letterSpacing: "0.02em",
                     fontSize: "1.1rem"
                   }}
-                >
-                  {filteredItems.length}{" "}
+          >
+            {filteredItems.length}{" "}
                   {filteredItems.length === 1 ? "exquisite piece" : "exquisite pieces"} found
-                </Typography>
+          </Typography>
                 
                 {/* Elegant divider */}
                 <Box
@@ -739,62 +739,62 @@ const Home = () => {
                     }}
                   />
                 </Box>
-              </Box>
+        </Box>
 
-              <Grid
-                container
-                spacing={{ xs: 2, sm: 2.5, md: 3 }}
-                sx={{
-                  justifyContent: "center",
-                  padding: { xs: 1, sm: 2 },
-                  maxWidth: "1400px",
-                  margin: "0 auto",
-                }}
-              >
+        <Grid
+          container
+          spacing={{ xs: 2, sm: 2.5, md: 3 }}
+          sx={{
+            justifyContent: "center",
+            padding: { xs: 1, sm: 2 },
+            maxWidth: "1400px",
+            margin: "0 auto",
+          }}
+        >
                 {filteredItems.length > 0 ? (
                   filteredItems.map((item) => (
-                    <Grid key={item.id}>
-                      <Box sx={{ width: "100%", maxWidth: "320px" }}>
-                        <ItemCard item={item} />
-                      </Box>
-                    </Grid>
-                  ))
-                ) : (
-                  <Grid>
-                    <Box
-                      sx={{
-                        textAlign: "center",
-                        py: 8,
-                        background:
-                          "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
-                        borderRadius: "20px",
-                        border: "2px dashed #dee2e6",
-                      }}
-                    >
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: "#6c757d",
-                          mb: 2,
-                          fontWeight: "500",
-                        }}
-                      >
-                        🔍 No items found
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "#adb5bd",
-                          fontSize: "0.9rem",
-                        }}
-                      >
-                        Try selecting a different category or check back later for new
-                        arrivals
-                      </Typography>
-                    </Box>
-                  </Grid>
-                )}
+              <Grid key={item.id}>
+                <Box sx={{ width: "100%", maxWidth: "320px" }}>
+                  <ItemCard item={item} />
+                </Box>
               </Grid>
+            ))
+          ) : (
+            <Grid>
+              <Box
+                sx={{
+                  textAlign: "center",
+                  py: 8,
+                  background:
+                    "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+                  borderRadius: "20px",
+                  border: "2px dashed #dee2e6",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "#6c757d",
+                    mb: 2,
+                    fontWeight: "500",
+                  }}
+                >
+                  🔍 No items found
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#adb5bd",
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  Try selecting a different category or check back later for new
+                  arrivals
+                </Typography>
+              </Box>
+            </Grid>
+          )}
+        </Grid>
             </Paper>
           </Box>
         </Box>
