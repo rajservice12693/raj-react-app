@@ -54,20 +54,20 @@ const ItemCard = ({ item }: { item: any }) => {
         position: "relative",
         overflow: "hidden",
         backdropFilter: "blur(20px)",
-        "&:hover": {
-          transform: "translateY(-4px)",
-          boxShadow: "0 10px 25px rgba(255, 193, 7, 0.15), 0 3px 15px rgba(0, 0, 0, 0.1)",
-          border: "1px solid rgba(255, 193, 7, 0.3)",
-          "& .jewelry-image": {
-            transform: "scale(1.02)",
-          },
-          "& .carousel-arrows": {
-            opacity: 1,
-          },
-          "& .carousel-indicators": {
-            opacity: 1,
-          }
-        },
+            "&:hover": {
+              transform: "translateY(-4px)",
+              boxShadow: "0 10px 25px rgba(255, 193, 7, 0.15), 0 3px 15px rgba(0, 0, 0, 0.1)",
+              border: "1px solid rgba(255, 193, 7, 0.3)",
+              "& .jewelry-image": {
+                transform: "scale(1.02)",
+                "& img": {
+                  transform: "scale(1.05)",
+                }
+              },
+              "& .carousel-indicators": {
+                opacity: 1,
+              }
+            },
         "&::before": {
           content: '""',
           position: "absolute",
@@ -91,21 +91,9 @@ const ItemCard = ({ item }: { item: any }) => {
           position: "relative",
           overflow: "hidden",
           transition: "all 0.4s ease",
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: item.images && item.images.length > 0 
-              ? `url(${item.images[currentImageIndex]})` 
-              : "linear-gradient(135deg, #fff8e1 0%, #ffecb3 30%, #ffe0b2 70%, #fff3e0 100%)",
-            backgroundSize: "cover",
-            backgroundPosition: "center center",
-            backgroundRepeat: "no-repeat",
-            zIndex: 1
-          },
+          background: item.images && item.images.length > 0 
+            ? "linear-gradient(135deg, #fff8e1 0%, #ffecb3 30%, #ffe0b2 70%, #fff3e0 100%)"
+            : "linear-gradient(135deg, #fff8e1 0%, #ffecb3 30%, #ffe0b2 70%, #fff3e0 100%)",
           "&::after": {
             content: '""',
             position: "absolute",
@@ -121,6 +109,25 @@ const ItemCard = ({ item }: { item: any }) => {
           }
         }}
       >
+        {/* Actual Image Element for Better Centering */}
+        {item.images && item.images.length > 0 ? (
+          <Box
+            component="img"
+            src={item.images[currentImageIndex]}
+            alt={item.itemName || `${item.materialName} ${item.categoryName}`}
+            sx={{
+              maxWidth: "100%",
+              maxHeight: "100%",
+              width: "auto",
+              height: "auto",
+              objectFit: "contain",
+              objectPosition: "center center",
+              position: "relative",
+              zIndex: 1,
+              transition: "all 0.4s ease"
+            }}
+          />
+        ) : null}
         {/* Show diamond icon only if no images */}
         {(!item.images || item.images.length === 0) && (
           <Box sx={{ 
