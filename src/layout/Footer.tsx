@@ -1,8 +1,41 @@
 // Footer.tsx - Simple Full Width
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
+
+  const handleLinkClick = (link: string) => {
+    switch (link) {
+      case "Contact":
+        navigate("/contact");
+        break;
+      case "About Us":
+        // Add about page route when created
+        console.log("About Us clicked");
+        break;
+      case "Shipping":
+        // Add shipping page route when created
+        console.log("Shipping clicked");
+        break;
+      case "Returns":
+        // Add returns page route when created
+        console.log("Returns clicked");
+        break;
+      case "Privacy":
+        // Add privacy page route when created
+        console.log("Privacy clicked");
+        break;
+      case "Terms":
+        // Add terms page route when created
+        console.log("Terms clicked");
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <Box
       component="footer"
@@ -42,10 +75,16 @@ const Footer = () => {
             <Typography
               key={link}
               variant="body2"
+              onClick={() => handleLinkClick(link)}
               sx={{
                 cursor: "pointer",
                 fontWeight: "500",
-                "&:hover": { textDecoration: "underline" },
+                transition: "all 0.3s ease",
+                "&:hover": { 
+                  textDecoration: "underline",
+                  color: "#ffc107",
+                  transform: "translateY(-1px)"
+                },
               }}
             >
               {link}

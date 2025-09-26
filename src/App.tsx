@@ -8,6 +8,7 @@ import { JewelleryEntry } from "./components/pages/JewelleryEntry";
 import { CategoryEntry } from "./components/pages/CategoryEntry";
 import { MaterialEntry } from "./components/pages/MaterialEntry";
 import { AdminDashboard } from "./components/admin/AdminDashboard";
+import ContactPage from "./components/pages/ContactPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
@@ -31,6 +32,7 @@ function App() {
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             
             {/* Protected Admin Routes */}
             <Route

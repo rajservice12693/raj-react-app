@@ -83,11 +83,11 @@ const LoginPage: React.FC = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "calc(100vh - 120px)",
+        minHeight: "100vh",
         width: "100%",
         background: "linear-gradient(135deg, #fff8e1 0%, #ffecb3 50%, #ffe0b2 100%)",
         padding: "40px 0",
-        marginTop: "60px",
+        marginTop: "0",
         position: "relative",
         overflow: "hidden",
         "&::before": {
@@ -101,8 +101,8 @@ const LoginPage: React.FC = () => {
           opacity: 0.3
         },
         '@media (max-width: 768px)': {
-          marginTop: "50px",
-          minHeight: "calc(100vh - 100px)",
+          marginTop: "0",
+          minHeight: "100vh",
           padding: "30px 0"
         }
       }}
