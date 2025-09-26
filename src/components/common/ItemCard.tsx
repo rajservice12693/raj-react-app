@@ -50,12 +50,17 @@ const ItemCard = ({ item }: { item: any }) => {
         }
       }}
     >
-      {/* Image Placeholder */}
+      {/* Jewelry Image */}
       <Box
         className="jewelry-image"
         sx={{
           height: "180px",
-          background: "linear-gradient(135deg, #fff8e1 0%, #ffecb3 30%, #ffe0b2 70%, #fff3e0 100%)",
+          background: item.images && item.images.length > 0 
+            ? `url(${item.images[0]})` 
+            : "linear-gradient(135deg, #fff8e1 0%, #ffecb3 30%, #ffe0b2 70%, #fff3e0 100%)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -69,7 +74,9 @@ const ItemCard = ({ item }: { item: any }) => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "radial-gradient(circle at 30% 20%, rgba(255, 193, 7, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255, 143, 0, 0.08) 0%, transparent 50%)",
+            background: item.images && item.images.length > 0 
+              ? "linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.05) 100%)"
+              : "radial-gradient(circle at 30% 20%, rgba(255, 193, 7, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255, 143, 0, 0.08) 0%, transparent 50%)",
             opacity: 0.6
           },
           "&::after": {
@@ -85,19 +92,41 @@ const ItemCard = ({ item }: { item: any }) => {
           }
         }}
       >
-        <Box sx={{ 
-          position: "relative",
-          zIndex: 2,
-          "& .diamond-icon": {
-            color: "#ffc107",
-            fontSize: "2.8rem",
-            filter: "drop-shadow(0 3px 6px rgba(255, 193, 7, 0.3)) drop-shadow(0 0 15px rgba(255, 193, 7, 0.2))",
-            animation: "sparkle 3s ease-in-out infinite alternate",
-            transition: "all 0.3s ease"
-          }
-        }}>
-          <DiamondIcon className="diamond-icon" />
-        </Box>
+        {/* Show diamond icon only if no images */}
+        {(!item.images || item.images.length === 0) && (
+          <Box sx={{ 
+            position: "relative",
+            zIndex: 2,
+            "& .diamond-icon": {
+              color: "#ffc107",
+              fontSize: "2.8rem",
+              filter: "drop-shadow(0 3px 6px rgba(255, 193, 7, 0.3)) drop-shadow(0 0 15px rgba(255, 193, 7, 0.2))",
+              animation: "sparkle 3s ease-in-out infinite alternate",
+              transition: "all 0.3s ease"
+            }
+          }}>
+            <DiamondIcon className="diamond-icon" />
+          </Box>
+        )}
+        
+        {/* Image count indicator if multiple images */}
+        {item.images && item.images.length > 1 && (
+          <Box sx={{
+            position: "absolute",
+            top: "12px",
+            right: "12px",
+            background: "rgba(0, 0, 0, 0.7)",
+            color: "#fff",
+            borderRadius: "12px",
+            px: 1,
+            py: 0.5,
+            fontSize: "0.7rem",
+            fontWeight: "bold",
+            zIndex: 3
+          }}>
+            +{item.images.length - 1}
+          </Box>
+        )}
         
         {/* Action Buttons */}
         {/* <Box
@@ -174,7 +203,7 @@ const ItemCard = ({ item }: { item: any }) => {
             letterSpacing: "0.02em"
           }}
         >
-          {item.materialName} {item.categoryName}
+          {item.itemName || `${item.materialName} ${item.categoryName}`}
         </Typography>
         
         {/* Description */}
@@ -189,7 +218,7 @@ const ItemCard = ({ item }: { item: any }) => {
             opacity: 0.8
           }}
         >
-          Exquisite {item.materialName.toLowerCase()} {item.categoryName.toLowerCase()} crafted with precision
+          {item.description || `Exquisite ${item.materialName.toLowerCase()} ${item.categoryName.toLowerCase()} crafted with precision`}
         </Typography>
         
         {/* Details */}
@@ -257,15 +286,15 @@ const ItemCard = ({ item }: { item: any }) => {
           </Box>
         </Box>
         
-        {/* Price and Add to Cart */}
-        {/* <Box sx={{ 
+        {/* Price */}
+        <Box sx={{ 
           display: "flex", 
-          justifyContent: "space-between", 
+          justifyContent: "center", 
           alignItems: "center",
           pt: 1,
           borderTop: "1px solid rgba(255, 193, 7, 0.1)"
         }}>
-          <Box>
+          <Box sx={{ textAlign: "center" }}>
             <Typography 
               variant="h5" 
               sx={{ 
@@ -290,40 +319,10 @@ const ItemCard = ({ item }: { item: any }) => {
                 letterSpacing: "0.1em"
               }}
             >
-              Starting Price
+              Price
             </Typography>
           </Box>
-          
-          <Button
-            variant="contained"
-            size="small"
-            startIcon={<ShoppingCartIcon />}
-            sx={{
-              background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
-              color: "#5d4037",
-              borderRadius: "12px",
-              px: 2,
-              py: 0.8,
-              fontSize: "0.75rem",
-              fontWeight: "600",
-              textTransform: "none",
-              boxShadow: "0 3px 12px rgba(255, 193, 7, 0.3)",
-              transition: "all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-              border: "1px solid rgba(255, 193, 7, 0.2)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #ffb300 0%, #ff6f00 100%)",
-                transform: "translateY(-1px) scale(1.02)",
-                boxShadow: "0 6px 20px rgba(255, 193, 7, 0.4)",
-                border: "1px solid rgba(255, 193, 7, 0.3)",
-              },
-              "&:active": {
-                transform: "translateY(-1px) scale(1.01)",
-              }
-            }}
-          >
-            Add to Cart
-          </Button>
-        </Box> */}
+        </Box>
       </CardContent>
     </Card>
   );
