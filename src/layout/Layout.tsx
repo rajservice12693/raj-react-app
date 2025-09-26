@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./Header";
 import MainContent from "./MainContent";
 import Footer from "./Footer";
@@ -26,6 +26,13 @@ const Layout = ({ children }: any) => {
   const handleLoginButton = () => {
     navigate("/login");
   };
+
+  // Reset sidebar state when authentication changes
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setSidebarOpen(false);
+    }
+  }, [isAuthenticated]);
 
   return (
     <Box 

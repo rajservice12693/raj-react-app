@@ -17,11 +17,9 @@ import {
   IconButton,
   DialogContent,
   DialogActions,
-  Card,
   Chip,
   Avatar,
   Pagination,
-  InputAdornment,
   Paper,
 } from "@mui/material";
 import { toast } from "react-toastify";
@@ -33,7 +31,6 @@ import CategoryIcon from "@mui/icons-material/Category";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import SearchIcon from "@mui/icons-material/Search";
 
 export const CategoryEntry = () => {
   const [validated, setValidated] = useState(false);
@@ -41,9 +38,7 @@ export const CategoryEntry = () => {
   const [categoryList, setCategoryList] = useState<ICategoryModal[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [totalCount, setTotalCount] = useState(0);
   const [openCategoryItemDialog, setOpenCategoryItemDialog] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
 
   const handleDeleteCategory = async (categoryId: string) => {
     if (window.confirm("Are you sure you want to delete this category?")) {
@@ -63,7 +58,6 @@ export const CategoryEntry = () => {
     try {
       const categories = await MasterService.getCategories();
       setCategoryList(categories.data || categories);
-      setTotalCount(categories.totalCount || categories.length);
     } catch (error) {
       toast.error("Failed to load categories");
     }
@@ -73,10 +67,8 @@ export const CategoryEntry = () => {
     loadCategoryList();
   }, []);
 
-  // Filter categories based on search term
-  const filteredCategories = categoryList.filter((category) =>
-    category.categoryName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Use all categories since we removed search functionality
+  const filteredCategories = categoryList;
 
   // Pagination calculations
   const paginatedCategories = filteredCategories.slice(
@@ -233,197 +225,6 @@ export const CategoryEntry = () => {
         </Stack>
       </Paper>
 
-      {/* Search and Stats Section */}
-      <Paper 
-        elevation={0} 
-        sx={{ 
-          p: { xs: 2, sm: 3 }, 
-          mb: 4, 
-          background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
-          borderRadius: "20px",
-          border: "1px solid rgba(0,0,0,0.05)",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
-          position: "relative",
-          overflow: "hidden",
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: "4px",
-            background: "linear-gradient(90deg, #2196f3, #21cbf3, #03a9f4, #2196f3)",
-            backgroundSize: "300% 100%",
-            animation: "gradientShift 3s ease infinite"
-          }
-        }}
-      >
-        <Box sx={{ 
-          display: "grid", 
-          gridTemplateColumns: { xs: "1fr", md: "2fr 1fr" },
-          gap: 3,
-          alignItems: "center"
-        }}>
-          <TextField
-            fullWidth
-            placeholder="Search categories..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setPage(0); // Reset to first page when searching
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ color: "#ffc107" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "12px",
-                "&:hover fieldset": { borderColor: "#ffc107" },
-                "&.Mui-focused fieldset": { borderColor: "#ffc107" },
-              },
-              "& .MuiInputLabel-root.Mui-focused": {
-                color: "#ffc107",
-              }
-            }}
-          />
-          <Card sx={{ 
-            p: 3, 
-            textAlign: "center", 
-            background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
-            borderRadius: "12px",
-            border: "1px solid rgba(33, 150, 243, 0.2)"
-          }}>
-            <Typography variant="h4" sx={{ 
-              fontWeight: "bold", 
-              background: "linear-gradient(135deg, #2196f3 0%, #21cbf3 100%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              mb: 1
-            }}>
-              {filteredCategories.length}
-            </Typography>
-            <Typography variant="h6" sx={{ color: "#2c3e50", fontWeight: 600 }}>
-              Categories
-            </Typography>
-            <Typography variant="body2" sx={{ color: "#7f8c8d" }}>
-              Total in database
-            </Typography>
-          </Card>
-        </Box>
-      </Paper>
-
-      {/* Add Category Dialog */}
-      <Dialog
-        open={openCategoryItemDialog}
-        onClose={() => setOpenCategoryItemDialog(false)}
-        fullWidth
-        maxWidth="sm"
-        PaperProps={{
-          sx: {
-            borderRadius: "20px",
-            border: "1px solid rgba(255, 193, 7, 0.2)",
-            background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.15)"
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{
-            background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
-            color: "#fff",
-            borderBottom: "1px solid rgba(255, 193, 7, 0.3)",
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            gap: 1
-          }}
-        >
-          <DiamondIcon />
-          Add New Category
-          <IconButton
-            aria-label="close"
-            onClick={() => setOpenCategoryItemDialog(false)}
-            sx={{
-              position: "absolute",
-              right: 12,
-              top: 12,
-              color: "#fff",
-              background: "rgba(255,255,255,0.2)",
-              "&:hover": { background: "rgba(255,255,255,0.3)" }
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-
-        <DialogContent dividers sx={{ p: 3 }}>
-          <TextField
-            label="Category Name"
-            name="categoryName"
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-            required
-            fullWidth
-            error={validated && !categoryName}
-            helperText={
-              validated && !categoryName
-                ? "Category name is required"
-                : "Enter a unique category name"
-            }
-            sx={{
-              mb: 2,
-              "& .MuiOutlinedInput-root": {
-                borderRadius: "8px",
-                "&:hover fieldset": { borderColor: "#C0C0C0" },
-                "&.Mui-focused fieldset": { borderColor: "#C0C0C0" },
-              },
-            }}
-          />
-        </DialogContent>
-
-        <DialogActions sx={{ p: 3, gap: 2 }}>
-          <Button
-            onClick={() => setOpenCategoryItemDialog(false)}
-            variant="outlined"
-            sx={{
-              borderColor: "#ffc107",
-              color: "#ffc107",
-              borderRadius: "12px",
-              px: 3,
-              "&:hover": { 
-                borderColor: "#ff8f00",
-                backgroundColor: "rgba(255, 193, 7, 0.1)"
-              }
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleSubmit}
-            sx={{
-              background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
-              color: "#fff",
-              fontWeight: "bold",
-              borderRadius: "12px",
-              px: 3,
-              "&:hover": {
-                background: "linear-gradient(135deg, #ff8f00 0%, #ff6f00 100%)",
-                transform: "translateY(-2px)",
-                boxShadow: "0 8px 20px rgba(255, 193, 7, 0.4)"
-              }
-            }}
-          >
-            Save Category
-          </Button>
-        </DialogActions>
-      </Dialog>
-
       {/* Categories Table */}
       <Paper 
         elevation={0} 
@@ -492,9 +293,7 @@ export const CategoryEntry = () => {
                 <TableRow>
                   <TableCell colSpan={4} sx={{ textAlign: "center", py: 4 }}>
                     <Alert severity="info" sx={{ background: "transparent" }}>
-                      {searchTerm
-                        ? "No categories found matching your search."
-                        : "No categories found."}
+                      No categories found.
                     </Alert>
                   </TableCell>
                 </TableRow>
@@ -612,6 +411,114 @@ export const CategoryEntry = () => {
           </Stack>
         </Box>
       </Paper>
+
+      {/* Add Category Dialog */}
+      <Dialog
+        open={openCategoryItemDialog}
+        onClose={() => setOpenCategoryItemDialog(false)}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            borderRadius: "20px",
+            border: "1px solid rgba(255, 193, 7, 0.2)",
+            background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.15)"
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+            color: "#fff",
+            borderBottom: "1px solid rgba(255, 193, 7, 0.3)",
+            fontWeight: "bold",
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
+          <DiamondIcon />
+          Add New Category
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenCategoryItemDialog(false)}
+            sx={{
+              position: "absolute",
+              right: 12,
+              top: 12,
+              color: "#fff",
+              background: "rgba(255,255,255,0.2)",
+              "&:hover": { background: "rgba(255,255,255,0.3)" }
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent dividers sx={{ p: 3 }}>
+          <TextField
+            label="Category Name"
+            name="categoryName"
+            value={categoryName}
+            onChange={(e) => setCategoryName(e.target.value)}
+            required
+            fullWidth
+            error={validated && !categoryName}
+            helperText={
+              validated && !categoryName
+                ? "Category name is required"
+                : "Enter a unique category name"
+            }
+            sx={{
+              mb: 2,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+                "&:hover fieldset": { borderColor: "#C0C0C0" },
+                "&.Mui-focused fieldset": { borderColor: "#C0C0C0" },
+              },
+            }}
+          />
+        </DialogContent>
+
+        <DialogActions sx={{ p: 3, gap: 2 }}>
+          <Button
+            onClick={() => setOpenCategoryItemDialog(false)}
+            variant="outlined"
+            sx={{
+              borderColor: "#ffc107",
+              color: "#ffc107",
+              borderRadius: "12px",
+              px: 3,
+              "&:hover": { 
+                borderColor: "#ff8f00",
+                backgroundColor: "rgba(255, 193, 7, 0.1)"
+              }
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSubmit}
+            sx={{
+              background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+              color: "#fff",
+              fontWeight: "bold",
+              borderRadius: "12px",
+              px: 3,
+              "&:hover": {
+                background: "linear-gradient(135deg, #ff8f00 0%, #ff6f00 100%)",
+                transform: "translateY(-2px)",
+                boxShadow: "0 8px 20px rgba(255, 193, 7, 0.4)"
+              }
+            }}
+          >
+            Save Category
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </Box>
   );
 };

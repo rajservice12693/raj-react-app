@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { AppBar, Toolbar, Box, Button, IconButton } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import Logo from "../components/common/Logo";
 
 interface HeaderGuestProps {
   onLoginClick: () => void;
@@ -63,37 +64,11 @@ const HeaderGuest: React.FC<HeaderGuestProps> = ({ onLoginClick }) => {
           }
         }}>
           {/* Brand */}
-          <Box sx={{ 
-            display: "flex", 
-            alignItems: "center", 
-            gap: "8px",
-            '@media (max-width: 480px)': {
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              gap: '2px'
-            }
-          }}>
-            <Box component="span" sx={{ 
-              fontWeight: "bold", 
-              fontSize: "20px",
-              '@media (max-width: 768px)': {
-                fontSize: "18px"
-              },
-              '@media (max-width: 480px)': {
-                fontSize: "16px"
-              }
-            }}>
-              R@J
-            </Box>
-            <Box component="span" sx={{ 
-              fontSize: "12px",
-              '@media (max-width: 480px)': {
-                fontSize: "10px"
-              }
-            }}>
-              All Jewellery & Gold
-            </Box>
-          </Box>
+          <Logo 
+            size="medium" 
+            variant="header" 
+            subtitle="All Jewellery & Gold"
+          />
 
           {/* Diamond section */}
           <Box sx={{ 

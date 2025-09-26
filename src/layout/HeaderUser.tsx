@@ -11,6 +11,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import Box from "@mui/material/Box";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import { Chip } from "@mui/material";
+import Logo from "../components/common/Logo";
 
 interface HeaderUserProps {
   onMenuToggle?: () => void;
@@ -71,36 +72,11 @@ const HeaderUser: React.FC<HeaderUserProps> = ({
           </IconButton>
 
           {/* Brand */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <DiamondIcon sx={{ 
-              fontSize: 32, 
-              color: "#000",
-              filter: "drop-shadow(2px 2px 4px rgba(0,0,0,0.3))"
-            }} />
-            <Box>
-              <Typography 
-                variant="h5" 
-                component="div" 
-                sx={{ 
-                  fontWeight: "bold",
-                  lineHeight: 1,
-                  textShadow: "2px 2px 4px rgba(0,0,0,0.2)",
-                }}
-              >
-                R@J
-              </Typography>
-              <Typography 
-                variant="caption" 
-                sx={{ 
-                  fontStyle: "italic",
-                  color: "rgba(0, 0, 0, 0.7)",
-                  lineHeight: 1,
-                }}
-              >
-                Admin Dashboard
-              </Typography>
-            </Box>
-          </Box>
+          <Logo 
+            size="large" 
+            variant="admin" 
+            subtitle="Rohit Alankar Jewellers"
+          />
         </Box>
 
         {/* User info + Logout button */}
