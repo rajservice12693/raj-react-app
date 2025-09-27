@@ -9,8 +9,6 @@ import {
   Card,
   CardContent,
   IconButton,
-  Alert,
-  Snackbar,
 } from "@mui/material";
 import {
   Email as EmailIcon,
@@ -65,7 +63,8 @@ const ContactPage: React.FC = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #fff8e1 0%, #ffecb3 50%, #ffe0b2 100%)",
+        background:
+          "linear-gradient(135deg, #fff8e1 0%, #ffecb3 50%, #ffe0b2 100%)",
         padding: { xs: "20px", sm: "40px", md: "60px" },
         marginTop: "0",
         position: "relative",
@@ -77,19 +76,28 @@ const ContactPage: React.FC = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><pattern id=\"grain\" width=\"100\" height=\"100\" patternUnits=\"userSpaceOnUse\"><circle cx=\"25\" cy=\"25\" r=\"1\" fill=\"%23ffffff\" opacity=\"0.1\"/><circle cx=\"75\" cy=\"75\" r=\"1\" fill=\"%23ffffff\" opacity=\"0.1\"/><circle cx=\"50\" cy=\"10\" r=\"0.5\" fill=\"%23ffffff\" opacity=\"0.1\"/><circle cx=\"10\" cy=\"60\" r=\"0.5\" fill=\"%23ffffff\" opacity=\"0.1\"/><circle cx=\"90\" cy=\"40\" r=\"0.5\" fill=\"%23ffffff\" opacity=\"0.1\"/></pattern></defs><rect width=\"100\" height=\"100\" fill=\"url(%23grain)\"/></svg>')",
-          opacity: 0.3
+          background:
+            'url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="%23ffffff" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="%23ffffff" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>\')',
+          opacity: 0.3,
         },
       }}
     >
-      <Box sx={{ position: "relative", zIndex: 1, maxWidth: "1200px", margin: "0 auto" }}>
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 1,
+          maxWidth: "1200px",
+          margin: "0 auto",
+        }}
+      >
         {/* Header Section */}
         <Box sx={{ textAlign: "center", mb: 6 }}>
           <Typography
             variant="h2"
             sx={{
               fontWeight: "bold",
-              background: "linear-gradient(135deg, #d4af37 0%, #ffc107 25%, #ff8f00 50%, #d4af37 75%, #b8860b 100%)",
+              background:
+                "linear-gradient(135deg, #d4af37 0%, #ffc107 25%, #ff8f00 50%, #d4af37 75%, #b8860b 100%)",
               backgroundClip: "text",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
@@ -110,19 +118,20 @@ const ContactPage: React.FC = () => {
               lineHeight: 1.6,
             }}
           >
-            Get in touch with us for any inquiries about our exquisite jewelry collection.
-            We're here to help you find the perfect piece.
+            Get in touch with us for any inquiries about our exquisite jewelry
+            collection. We're here to help you find the perfect piece.
           </Typography>
         </Box>
 
         <Grid container spacing={4}>
           {/* Contact Information */}
-          <Grid item xs={12} md={4}>
+          <Grid>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
               {/* Contact Cards */}
               <Card
                 sx={{
-                  background: "linear-gradient(135deg, #ffffff 0%, #faf9f7 100%)",
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #faf9f7 100%)",
                   borderRadius: "20px",
                   border: "1px solid rgba(255, 193, 7, 0.2)",
                   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
@@ -139,13 +148,17 @@ const ContactPage: React.FC = () => {
                       sx={{
                         p: 1.5,
                         borderRadius: "12px",
-                        background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+                        background:
+                          "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
                         mr: 2,
                       }}
                     >
                       <EmailIcon sx={{ color: "#fff", fontSize: 24 }} />
                     </Box>
-                    <Typography variant="h6" sx={{ fontWeight: "600", color: "#2c3e50" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "600", color: "#2c3e50" }}
+                    >
                       Email Us
                     </Typography>
                   </Box>
@@ -160,7 +173,8 @@ const ContactPage: React.FC = () => {
 
               <Card
                 sx={{
-                  background: "linear-gradient(135deg, #ffffff 0%, #faf9f7 100%)",
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #faf9f7 100%)",
                   borderRadius: "20px",
                   border: "1px solid rgba(255, 193, 7, 0.2)",
                   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
@@ -177,13 +191,17 @@ const ContactPage: React.FC = () => {
                       sx={{
                         p: 1.5,
                         borderRadius: "12px",
-                        background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+                        background:
+                          "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
                         mr: 2,
                       }}
                     >
                       <PhoneIcon sx={{ color: "#fff", fontSize: 24 }} />
                     </Box>
-                    <Typography variant="h6" sx={{ fontWeight: "600", color: "#2c3e50" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "600", color: "#2c3e50" }}
+                    >
                       Call Us
                     </Typography>
                   </Box>
@@ -198,7 +216,8 @@ const ContactPage: React.FC = () => {
 
               <Card
                 sx={{
-                  background: "linear-gradient(135deg, #ffffff 0%, #faf9f7 100%)",
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #faf9f7 100%)",
                   borderRadius: "20px",
                   border: "1px solid rgba(255, 193, 7, 0.2)",
                   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
@@ -215,13 +234,17 @@ const ContactPage: React.FC = () => {
                       sx={{
                         p: 1.5,
                         borderRadius: "12px",
-                        background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+                        background:
+                          "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
                         mr: 2,
                       }}
                     >
                       <LocationIcon sx={{ color: "#fff", fontSize: 24 }} />
                     </Box>
-                    <Typography variant="h6" sx={{ fontWeight: "600", color: "#2c3e50" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "600", color: "#2c3e50" }}
+                    >
                       Visit Us
                     </Typography>
                   </Box>
@@ -236,7 +259,8 @@ const ContactPage: React.FC = () => {
 
               <Card
                 sx={{
-                  background: "linear-gradient(135deg, #ffffff 0%, #faf9f7 100%)",
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #faf9f7 100%)",
                   borderRadius: "20px",
                   border: "1px solid rgba(255, 193, 7, 0.2)",
                   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
@@ -253,13 +277,17 @@ const ContactPage: React.FC = () => {
                       sx={{
                         p: 1.5,
                         borderRadius: "12px",
-                        background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+                        background:
+                          "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
                         mr: 2,
                       }}
                     >
                       <TimeIcon sx={{ color: "#fff", fontSize: 24 }} />
                     </Box>
-                    <Typography variant="h6" sx={{ fontWeight: "600", color: "#2c3e50" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "600", color: "#2c3e50" }}
+                    >
                       Business Hours
                     </Typography>
                   </Box>
@@ -275,7 +303,7 @@ const ContactPage: React.FC = () => {
           </Grid>
 
           {/* Contact Form */}
-          <Grid item xs={12} md={8}>
+          <Grid>
             <Paper
               elevation={24}
               sx={{
@@ -293,10 +321,11 @@ const ContactPage: React.FC = () => {
                   left: 0,
                   right: 0,
                   height: "4px",
-                  background: "linear-gradient(90deg, #ffc107, #ff8f00, #ffb300, #ffc107)",
+                  background:
+                    "linear-gradient(90deg, #ffc107, #ff8f00, #ffb300, #ffc107)",
                   backgroundSize: "300% 100%",
-                  animation: "gradientShift 3s ease infinite"
-                }
+                  animation: "gradientShift 3s ease infinite",
+                },
               }}
             >
               <Typography
@@ -318,12 +347,13 @@ const ContactPage: React.FC = () => {
                   textAlign: "center",
                 }}
               >
-                We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                We'd love to hear from you. Send us a message and we'll respond
+                as soon as possible.
               </Typography>
 
               <form onSubmit={handleSubmit}>
                 <Grid container spacing={3}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid>
                     <TextField
                       fullWidth
                       label="Full Name"
@@ -339,7 +369,7 @@ const ContactPage: React.FC = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid>
                     <TextField
                       fullWidth
                       label="Email Address"
@@ -356,7 +386,7 @@ const ContactPage: React.FC = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid>
                     <TextField
                       fullWidth
                       label="Phone Number"
@@ -371,7 +401,7 @@ const ContactPage: React.FC = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6}>
+                  <Grid>
                     <TextField
                       fullWidth
                       label="Subject"
@@ -387,7 +417,7 @@ const ContactPage: React.FC = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid>
                     <TextField
                       fullWidth
                       label="Message"
@@ -405,7 +435,7 @@ const ContactPage: React.FC = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid>
                     <Button
                       type="submit"
                       variant="contained"
@@ -413,7 +443,8 @@ const ContactPage: React.FC = () => {
                       disabled={isSubmitting}
                       startIcon={<SendIcon />}
                       sx={{
-                        background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+                        background:
+                          "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
                         color: "#fff",
                         fontWeight: "bold",
                         borderRadius: "15px",
@@ -422,7 +453,8 @@ const ContactPage: React.FC = () => {
                         fontSize: "1.1rem",
                         boxShadow: "0 8px 25px rgba(255, 193, 7, 0.3)",
                         "&:hover": {
-                          background: "linear-gradient(135deg, #ff8f00 0%, #ff6f00 100%)",
+                          background:
+                            "linear-gradient(135deg, #ff8f00 0%, #ff6f00 100%)",
                           transform: "translateY(-2px)",
                           boxShadow: "0 12px 35px rgba(255, 193, 7, 0.4)",
                         },
@@ -463,14 +495,16 @@ const ContactPage: React.FC = () => {
               <IconButton
                 key={index}
                 sx={{
-                  background: "linear-gradient(135deg, #ffffff 0%, #faf9f7 100%)",
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #faf9f7 100%)",
                   border: "2px solid rgba(255, 193, 7, 0.2)",
                   borderRadius: "16px",
                   width: 56,
                   height: 56,
                   color: social.color,
                   "&:hover": {
-                    background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+                    background:
+                      "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
                     color: "#fff",
                     transform: "translateY(-4px)",
                     boxShadow: "0 8px 25px rgba(255, 193, 7, 0.3)",

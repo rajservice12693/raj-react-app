@@ -17,7 +17,6 @@ import {
   Toolbar,
   Box,
   IconButton,
-  Typography,
 } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { Link, useLocation } from "react-router-dom";

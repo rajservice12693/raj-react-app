@@ -3,13 +3,11 @@
 import React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Box from "@mui/material/Box";
-import DiamondIcon from "@mui/icons-material/Diamond";
 import { Chip } from "@mui/material";
 import Logo from "../components/common/Logo";
 
@@ -140,15 +138,8 @@ const HeaderUser: React.FC<HeaderUserProps> = ({
         gap: 4,
         borderTop: "1px solid rgba(0, 0, 0, 0.1)"
       }}>
-        <Typography variant="caption" sx={{ fontWeight: "bold", display: "flex", alignItems: "center", gap: 0.5 }}>
-          <DiamondIcon sx={{ fontSize: 14 }} /> Jewellery: 124
-        </Typography>
-        <Typography variant="caption" sx={{ fontWeight: "bold", display: "flex", alignItems: "center", gap: 0.5 }}>
-          💎 Categories: 8
-        </Typography>
-        <Typography variant="caption" sx={{ fontWeight: "bold", display: "flex", alignItems: "center", gap: 0.5 }}>
-          📦 Orders: 24
-        </Typography>
+      
+       
       </Box>
     </AppBar>
   );

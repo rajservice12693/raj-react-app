@@ -10,8 +10,6 @@ import {
   Alert,
   IconButton,
   InputAdornment,
-  useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -22,9 +20,6 @@ import { useAuth } from "../../contexts/AuthContext";
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isTablet = useMediaQuery(theme.breakpoints.down("md"));
 
   const [loginFormData, setLoginFormData] = useState({
     emailId: "",

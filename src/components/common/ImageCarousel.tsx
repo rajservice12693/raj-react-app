@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, IconButton, Typography, Paper } from '@mui/material';
+import { Box, IconButton, Typography } from '@mui/material';
 import { ChevronLeft, ChevronRight, Circle } from '@mui/icons-material';
 
 interface ImageCarouselProps {

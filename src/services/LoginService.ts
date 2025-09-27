@@ -3,13 +3,14 @@ import { BASE_URL } from "../constants/Constants";
 
 export class LoginService {
   public static login = async (loginForData: any) => {
-    // const response = await axios.post(`${BASE_URL}/login`, loginForData);
-    return {
-      status: 200,
-      data: {
-        userName: "admin",
-      },
-    };
+    const response = await axios.post(`${BASE_URL}/login`, loginForData);
+    return response?.data;
+    // return {
+    //   status: 200,
+    //   data: {
+    //     userName: "admin",
+    //   },
+    // };
   };
 
   public static getItems = async () => {

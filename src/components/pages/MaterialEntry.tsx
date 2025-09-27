@@ -17,7 +17,6 @@ import {
   TableRow,
   Paper,
   Backdrop,
-  Card,
   Avatar,
   Chip,
 } from "@mui/material";
@@ -54,8 +53,6 @@ export const MaterialEntry = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
-
     if (!materailFormData.categoryId || !materailFormData.materialName.trim()) {
       setValidated(true);
       return;
