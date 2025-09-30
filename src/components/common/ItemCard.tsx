@@ -19,13 +19,12 @@ const ItemCard = ({ item }: { item: any }) => {
       interval = setInterval(() => {
         setCurrentImageIndex((prev) => {
           const next = (prev + 1) % item.images.length;
-          console.log('Auto-playing to image:', next);
+          // console.log('Auto-playing to image:', next);
           return next;
         });
       }, 1500); // Faster auto-play for better UX
-    } else {
-      console.log('Stopping carousel auto-play');
-    }
+    } 
+    
     
     return () => {
       if (interval) {
