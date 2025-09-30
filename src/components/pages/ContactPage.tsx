@@ -14,7 +14,6 @@ import {
   Email as EmailIcon,
   Phone as PhoneIcon,
   LocationOn as LocationIcon,
-  AccessTime as TimeIcon,
   Send as SendIcon,
   Facebook as FacebookIcon,
   Instagram as InstagramIcon,
