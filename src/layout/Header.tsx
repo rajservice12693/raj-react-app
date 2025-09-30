@@ -145,7 +145,7 @@ const HeaderGuest: React.FC<HeaderGuestProps> = ({ onLoginClick }) => {
             gap: "10px"
           }
         }}>
-          <Button
+          {/* <Button
             sx={{
               color: "#5d4037",
               fontSize: "14px",
@@ -167,7 +167,7 @@ const HeaderGuest: React.FC<HeaderGuestProps> = ({ onLoginClick }) => {
             }}
           >
             More
-          </Button>
+          </Button> */}
           
           <Button
             variant="contained"
