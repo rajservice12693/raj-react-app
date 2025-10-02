@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -24,9 +24,22 @@ import {
   ShoppingCart as CartIcon,
   Assessment as AssessmentIcon,
 } from "@mui/icons-material";
+import { Service } from "../../services/Service";
+import type { IDashboardCountModal } from "../common/modals/IDashboardCountModal";
 
 export const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [dashboardData, setDashboardData] =
+    useState<IDashboardCountModal | null>(null);
+
+  const fetchDashBoardIemCount = async () => {
+    const dashboardDataResponse = await Service.dashboardItemCounts();
+    setDashboardData(dashboardDataResponse.data);
+  };
+
+  useEffect(() => {
+    fetchDashBoardIemCount();
+  }, []);
 
   const dashboardCards = [
     {
@@ -53,32 +66,6 @@ export const AdminDashboard: React.FC = () => {
       color: "#e8f5e8",
     },
   ];
-
-  // Dashboard data from API response
-  const dashboardData = {
-    total: 3,
-    categoryTotal: 2,
-    materialTotal: 3,
-    categoryWise: [
-      {
-        categoryName: "Earrings",
-        categoryCount: 2,
-        categoryMaterial: {
-          Gold: 1,
-          Diamond: 1,
-        },
-      },
-      {
-        categoryName: "Ring",
-        categoryCount: 1,
-        categoryMaterial: {
-          Silver: 1,
-        },
-      },
-    ],
-    totalMaterialCount: 3,
-    materialList: ["Diamond", "Gold", "Silver"],
-  };
 
   // Function to generate tooltip content for materials
   const getMaterialTooltipContent = () => {
@@ -124,7 +111,7 @@ export const AdminDashboard: React.FC = () => {
             justifyContent: "center",
           }}
         >
-          {dashboardData.materialList.map((material, index) => (
+          {dashboardData?.materialList.map((material, index) => (
             <Chip
               key={index}
               label={material}
@@ -158,7 +145,7 @@ export const AdminDashboard: React.FC = () => {
             opacity: 0.8,
           }}
         >
-          Total: {dashboardData.materialList.length} materials
+          Total: {dashboardData?.materialList.length} materials
         </Typography>
       </Box>
     );
@@ -200,7 +187,7 @@ export const AdminDashboard: React.FC = () => {
         >
           Category-wise Material Distribution
         </Typography>
-        {dashboardData.categoryWise.map((category, index) => (
+        {dashboardData?.categoryWise.map((category, index) => (
           <Box
             key={index}
             sx={{
@@ -282,7 +269,7 @@ export const AdminDashboard: React.FC = () => {
   const statsCards = [
     {
       title: "Total Items",
-      value: dashboardData.total.toString(),
+      value: dashboardData?.total.toString(),
       icon: <InventoryIcon />,
       color: "#2196f3",
       gradient: "linear-gradient(135deg, #2196f3 0%, #64b5f6 100%)",
@@ -292,7 +279,7 @@ export const AdminDashboard: React.FC = () => {
     },
     {
       title: "Categories",
-      value: dashboardData.categoryTotal.toString(),
+      value: dashboardData?.categoryTotal.toString(),
       icon: <CategoryIcon />,
       color: "#ff9800",
       gradient: "linear-gradient(135deg, #ff9800 0%, #ffb74d 100%)",
@@ -300,19 +287,19 @@ export const AdminDashboard: React.FC = () => {
       change: "+0",
       changeType: "positive",
     },
-    {
-      title: "Materials",
-      value: dashboardData.materialTotal.toString(),
-      icon: <BuildIcon />,
-      color: "#4caf50",
-      gradient: "linear-gradient(135deg, #4caf50 0%, #81c784 100%)",
-      bgColor: "#e8f5e8",
-      change: "+0",
-      changeType: "positive",
-    },
+    // {
+    //   title: "Materials",
+    //   value: dashboardData?.materialTotal.toString(),
+    //   icon: <BuildIcon />,
+    //   color: "#4caf50",
+    //   gradient: "linear-gradient(135deg, #4caf50 0%, #81c784 100%)",
+    //   bgColor: "#e8f5e8",
+    //   change: "+0",
+    //   changeType: "positive",
+    // },
     {
       title: "Total Materials",
-      value: dashboardData.totalMaterialCount.toString(),
+      value: dashboardData?.materialTotal.toString(),
       icon: <PeopleIcon />,
       color: "#9c27b0",
       gradient: "linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%)",
@@ -453,13 +440,15 @@ export const AdminDashboard: React.FC = () => {
                 <LinearProgress
                   variant="determinate"
                   value={
-                    stat.title === "Total Items"
-                      ? (dashboardData.total / 10) * 100
-                      : stat.title === "Categories"
-                      ? (dashboardData.categoryTotal / 5) * 100
-                      : stat.title === "Materials"
-                      ? (dashboardData.materialTotal / 8) * 100
-                      : (dashboardData.totalMaterialCount / 6) * 100
+                    dashboardData
+                      ? stat.title === "Total Items"
+                        ? (dashboardData.total / 10) * 100
+                        : stat.title === "Categories"
+                        ? (dashboardData.categoryTotal / 5) * 100
+                        : stat.title === "Materials"
+                        ? (dashboardData.materialTotal / 8) * 100
+                        : (dashboardData.totalMaterialCount / 6) * 100
+                      : 0
                   }
                   sx={{
                     height: 6,

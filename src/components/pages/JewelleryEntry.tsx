@@ -24,6 +24,8 @@ import {
   Paper,
   Avatar,
   Chip,
+  ImageList,
+  ImageListItem,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
@@ -31,9 +33,12 @@ import DiamondIcon from "@mui/icons-material/Diamond";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import { toast } from "react-toastify";
 import { MasterService } from "../../services/MasterService";
-import { Service } from "../../services/Service/Service";
+import { Service } from "../../services/Service";
 import type { ICategoryModal } from "../common/modals/ICategoryModal";
 import type { IMaterialModal } from "../common/modals/IMaterialModal";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { ConfirmationDialog } from "../common/ConfirmationDialog";
 
 interface FormDataType {
   itemName: string;
@@ -51,6 +56,7 @@ export const JewelleryEntry: React.FC = () => {
   const [categoryList, setCategoryList] = useState<ICategoryModal[]>([]);
   const [materialsList, setMaterialsList] = useState<IMaterialModal[]>([]);
   const [itemsDbList, setItemsDbList] = useState<any[]>([]);
+  const [selectedItemId, setSelectedItemId] = useState("");
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -66,18 +72,52 @@ export const JewelleryEntry: React.FC = () => {
     description: "",
     images: [],
   });
+  const [isDialogOpen, setDialogOpen] = useState(false);
+
+  const handleDelete = (id: any) => {
+    setSelectedItemId(id);
+    setDialogOpen(true);
+  };
+
+  const handleCancel = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      console.log("pahila");
+      const deleteResponse = await Service.deleteItems(selectedItemId);
+      console.log("response aa gyail", deleteResponse);
+      if (deleteResponse?.status === 200) {
+        toast.success("Item deleted successfully!");
+        loadInitialMasterData();
+      } else {
+        toast.error("Failed to save item");
+      }
+      setDialogOpen(false);
+    } catch (error: any) {
+      const status = error?.response?.status;
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Error ${status || ""}: ${message}`);
+      setDialogOpen(false);
+    } finally {
+      console.log("finally");
+      setDialogOpen(false);
+    }
+  };
+
+  const loadInitialMasterData = async () => {
+    try {
+      const cats = await MasterService.getCategories();
+      setCategoryList(cats);
+      handleItemsList();
+    } catch (err) {
+      console.error("Error loading categories", err);
+      toast.error("Failed to load categories");
+    }
+  };
 
   useEffect(() => {
-    const loadInitialMasterData = async () => {
-      try {
-        const cats = await MasterService.getCategories();
-        setCategoryList(cats);
-        handleItemsList();
-      } catch (err) {
-        console.error("Error loading categories", err);
-        toast.error("Failed to load categories");
-      }
-    };
     loadInitialMasterData();
   }, []);
 
@@ -178,29 +218,42 @@ export const JewelleryEntry: React.FC = () => {
     }
   };
 
+  const handleRemoveImage = (fileIndex: number) => {
+    console.log(fileIndex);
+    const formDataImageCopy = [...formData.images];
+    formDataImageCopy.splice(fileIndex, 1);
+    setFormData((prev) => ({
+      ...prev,
+      images: formDataImageCopy,
+    }));
+  };
+
   return (
-    <Box sx={{ 
-      p: { xs: 2, sm: 3 }, 
-      minHeight: "100vh", 
-      background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
-      position: "relative",
-      "&::before": {
-        content: '""',
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        background: "radial-gradient(circle at 20% 80%, rgba(255, 193, 7, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(33, 150, 243, 0.1) 0%, transparent 50%)",
-        pointerEvents: "none"
-      }
-    }}>
+    <Box
+      sx={{
+        p: { xs: 2, sm: 3 },
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+        position: "relative",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background:
+            "radial-gradient(circle at 20% 80%, rgba(255, 193, 7, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(33, 150, 243, 0.1) 0%, transparent 50%)",
+          pointerEvents: "none",
+        },
+      }}
+    >
       {/* Header Section */}
-      <Paper 
-        elevation={0} 
-        sx={{ 
-          p: { xs: 2, sm: 3 }, 
-          mb: 4, 
+      <Paper
+        elevation={0}
+        sx={{
+          p: { xs: 2, sm: 3 },
+          mb: 4,
           background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
           borderRadius: "20px",
           border: "1px solid rgba(255, 193, 7, 0.2)",
@@ -214,44 +267,57 @@ export const JewelleryEntry: React.FC = () => {
             left: 0,
             right: 0,
             height: "4px",
-            background: "linear-gradient(90deg, #ffc107, #ff8f00, #ffb300, #ffc107)",
+            background:
+              "linear-gradient(90deg, #ffc107, #ff8f00, #ffb300, #ffc107)",
             backgroundSize: "300% 100%",
-            animation: "gradientShift 3s ease infinite"
+            animation: "gradientShift 3s ease infinite",
           },
           "@keyframes gradientShift": {
             "0%": { backgroundPosition: "0% 50%" },
             "50%": { backgroundPosition: "100% 50%" },
-            "100%": { backgroundPosition: "0% 50%" }
-          }
+            "100%": { backgroundPosition: "0% 50%" },
+          },
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-          <Avatar sx={{ 
-            background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
-            width: 56,
-            height: 56,
-            boxShadow: "0 4px 20px rgba(255, 193, 7, 0.4)"
-          }}>
+          <Avatar
+            sx={{
+              background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+              width: 56,
+              height: 56,
+              boxShadow: "0 4px 20px rgba(255, 193, 7, 0.4)",
+            }}
+          >
             <InventoryIcon sx={{ fontSize: 32, color: "#fff" }} />
           </Avatar>
           <Box>
-            <Typography variant="h4" sx={{ 
-              fontWeight: "bold", 
-              color: "#2c3e50",
-              background: "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent"
-            }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: "bold",
+                color: "#2c3e50",
+                background: "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
               Jewellery Management
             </Typography>
-            <Typography variant="body2" sx={{ color: "#7f8c8d", fontWeight: 500 }}>
+            <Typography
+              variant="body2"
+              sx={{ color: "#7f8c8d", fontWeight: 500 }}
+            >
               Add and manage your jewellery inventory
             </Typography>
           </Box>
         </Box>
-        
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography variant="h6" sx={{ color: "#2c3e50", fontWeight: 600 }}>
             Manage your jewellery collection with ease
           </Typography>
@@ -273,8 +339,8 @@ export const JewelleryEntry: React.FC = () => {
               "&:hover": {
                 background: "linear-gradient(135deg, #ff8f00 0%, #ff6f00 100%)",
                 transform: "translateY(-2px)",
-                boxShadow: "0 8px 25px rgba(255, 193, 7, 0.4)"
-              }
+                boxShadow: "0 8px 25px rgba(255, 193, 7, 0.4)",
+              },
             }}
           >
             Add Jewellery Item
@@ -293,8 +359,8 @@ export const JewelleryEntry: React.FC = () => {
             borderRadius: "20px",
             border: "1px solid rgba(255, 193, 7, 0.2)",
             background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.15)"
-          }
+            boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+          },
         }}
       >
         <DialogTitle
@@ -305,7 +371,7 @@ export const JewelleryEntry: React.FC = () => {
             fontWeight: "bold",
             display: "flex",
             alignItems: "center",
-            gap: 1
+            gap: 1,
           }}
         >
           <DiamondIcon />
@@ -319,7 +385,7 @@ export const JewelleryEntry: React.FC = () => {
               top: 12,
               color: "#fff",
               background: "rgba(255,255,255,0.2)",
-              "&:hover": { background: "rgba(255,255,255,0.3)" }
+              "&:hover": { background: "rgba(255,255,255,0.3)" },
             }}
           >
             <CloseIcon />
@@ -346,9 +412,7 @@ export const JewelleryEntry: React.FC = () => {
               fullWidth
               error={validated && !formData.itemName}
               helperText={
-                validated && !formData.itemName
-                  ? "Item name is required"
-                  : ""
+                validated && !formData.itemName ? "Item name is required" : ""
               }
               sx={{
                 "& .MuiOutlinedInput-root": {
@@ -358,7 +422,7 @@ export const JewelleryEntry: React.FC = () => {
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
                   color: "#ffc107",
-                }
+                },
               }}
             />
             <FormControl
@@ -373,7 +437,7 @@ export const JewelleryEntry: React.FC = () => {
                 },
                 "& .MuiInputLabel-root.Mui-focused": {
                   color: "#ffc107",
-                }
+                },
               }}
             >
               <InputLabel id="category-label">Category</InputLabel>
@@ -394,96 +458,133 @@ export const JewelleryEntry: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
-                <FormControl
-                  required
-                  fullWidth
-                  error={validated && !formData.materialId}
-                >
-                  <InputLabel id="material-label">Material</InputLabel>
-                  <Select
-                    labelId="material-label"
-                    name="materialId"
-                    value={formData.materialId}
-                    label="Material"
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="">
-                      <em>-- Select Material --</em>
-                    </MenuItem>
-                    {materialsList.map((mat) => (
-                      <MenuItem key={mat.materialId} value={mat.materialId}>
-                        {mat.materialName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <TextField
-                  label="Purity"
-                  name="purity"
-                  value={formData.purity}
-                  onChange={handleChange}
-                  inputProps={{ maxLength: 20 }}
-                  fullWidth
-                />
-                <TextField
-                  label="Weight (g)"
-                  name="weight"
-                  type="number"
-                  value={formData.weight}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-                <TextField
-                  label="Price (₹)"
-                  name="price"
-                  type="number"
-                  value={formData.price}
-                  onChange={handleChange}
-                  required
-                  fullWidth
-                />
-                <TextField
-                  label="Stock Quantity"
-                  name="stockQuantity"
-                  type="number"
-                  value={formData.stockQuantity}
-                  onChange={handleChange}
-                  fullWidth
-                />
-                <TextField
-                  label="Description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  multiline
-                  rows={3}
-                  fullWidth
-                />
-                <Button variant="outlined" component="label" fullWidth>
-                  Upload Images
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    hidden
-                    onChange={handleFileChange}
-                  />
-                </Button>
-                {formData.images.length > 0 && (
-                  <Box sx={{ mt: 1 }}>
-                    {formData.images.map((file, idx) => (
-                      <Typography variant="body2" key={idx}>
-                        {idx + 1}. {file.name}
-                      </Typography>
-                    ))}
-                  </Box>
-                )}
+            <FormControl
+              required
+              fullWidth
+              error={validated && !formData.materialId}
+            >
+              <InputLabel id="material-label">Material</InputLabel>
+              <Select
+                labelId="material-label"
+                name="materialId"
+                value={formData.materialId}
+                label="Material"
+                onChange={handleChange}
+              >
+                <MenuItem value="">
+                  <em>-- Select Material --</em>
+                </MenuItem>
+                {materialsList.map((mat) => (
+                  <MenuItem key={mat.materialId} value={mat.materialId}>
+                    {mat.materialName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="Purity"
+              name="purity"
+              value={formData.purity}
+              onChange={handleChange}
+              inputProps={{ maxLength: 20 }}
+              fullWidth
+            />
+            <TextField
+              label="Weight (g)"
+              name="weight"
+              type="number"
+              value={formData.weight}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Price (₹)"
+              name="price"
+              type="number"
+              value={formData.price}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
+            <TextField
+              label="Stock Quantity"
+              name="stockQuantity"
+              type="number"
+              value={formData.stockQuantity}
+              onChange={handleChange}
+              fullWidth
+            />
+            <TextField
+              label="Description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              multiline
+              rows={3}
+              fullWidth
+            />
+            <Button variant="outlined" component="label" fullWidth>
+              Upload Images
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                hidden
+                onChange={handleFileChange}
+              />
+            </Button>
+            {formData.images.length > 0 && (
+              <Box sx={{ mt: 2 }}>
+                <ImageList cols={3} gap={12}>
+                  {formData.images.map((file, idx) => (
+                    <ImageListItem key={idx} sx={{ position: "relative" }}>
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={file.name}
+                        loading="lazy"
+                        style={{
+                          borderRadius: 4,
+                          objectFit: "cover",
+                          width: "100%",
+                          height: 120,
+                        }}
+                      />
+                      <IconButton
+                        size="small"
+                        onClick={() => handleRemoveImage(idx)}
+                        sx={{
+                          position: "absolute",
+                          top: 4,
+                          right: 4,
+                          backgroundColor: "rgba(255,255,255,0.8)",
+                          "&:hover": {
+                            backgroundColor: "rgba(255,0,0,0.8)",
+                            color: "white",
+                          },
+                        }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </ImageListItem>
+                  ))}
+                </ImageList>
               </Box>
-            </DialogContent>
+            )}
+            {/* {formData.images.length > 0 && (
+              <Box sx={{ mt: 1 }}>
+                {formData.images.map((file, idx) => (
+                  <Typography variant="body2" key={idx}>
+                    {idx + 1}. {file.name}
+                  </Typography>
+                ))}
+              </Box>
+            )} */}
+          </Box>
+        </DialogContent>
 
         <DialogActions sx={{ p: 3, gap: 2 }}>
-          <Button 
+          <Button
             onClick={() => setOpenDialog(false)}
             variant="outlined"
             sx={{
@@ -491,16 +592,16 @@ export const JewelleryEntry: React.FC = () => {
               color: "#ffc107",
               borderRadius: "12px",
               px: 3,
-              "&:hover": { 
+              "&:hover": {
                 borderColor: "#ff8f00",
-                backgroundColor: "rgba(255, 193, 7, 0.1)"
-              }
+                backgroundColor: "rgba(255, 193, 7, 0.1)",
+              },
             }}
           >
             Cancel
           </Button>
-          <Button 
-            variant="contained" 
+          <Button
+            variant="contained"
             onClick={handleSubmit}
             sx={{
               background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
@@ -511,8 +612,8 @@ export const JewelleryEntry: React.FC = () => {
               "&:hover": {
                 background: "linear-gradient(135deg, #ff8f00 0%, #ff6f00 100%)",
                 transform: "translateY(-2px)",
-                boxShadow: "0 8px 20px rgba(255, 193, 7, 0.4)"
-              }
+                boxShadow: "0 8px 20px rgba(255, 193, 7, 0.4)",
+              },
             }}
           >
             Save Item
@@ -521,10 +622,10 @@ export const JewelleryEntry: React.FC = () => {
       </Dialog>
 
       {/* Items List Section */}
-      <Paper 
-        elevation={0} 
-        sx={{ 
-          p: { xs: 2, sm: 3 }, 
+      <Paper
+        elevation={0}
+        sx={{
+          p: { xs: 2, sm: 3 },
           background: "linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)",
           borderRadius: "20px",
           border: "1px solid rgba(0,0,0,0.05)",
@@ -538,36 +639,42 @@ export const JewelleryEntry: React.FC = () => {
             left: 0,
             right: 0,
             height: "4px",
-            background: "linear-gradient(90deg, #2196f3, #21cbf3, #03a9f4, #2196f3)",
+            background:
+              "linear-gradient(90deg, #2196f3, #21cbf3, #03a9f4, #2196f3)",
             backgroundSize: "300% 100%",
-            animation: "gradientShift 3s ease infinite"
-          }
+            animation: "gradientShift 3s ease infinite",
+          },
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
-          <Avatar sx={{ 
-            background: "linear-gradient(135deg, #2196f3 0%, #21cbf3 100%)",
-            width: 48,
-            height: 48,
-            boxShadow: "0 4px 15px rgba(33, 150, 243, 0.3)"
-          }}>
+          <Avatar
+            sx={{
+              background: "linear-gradient(135deg, #2196f3 0%, #21cbf3 100%)",
+              width: 48,
+              height: 48,
+              boxShadow: "0 4px 15px rgba(33, 150, 243, 0.3)",
+            }}
+          >
             <InventoryIcon sx={{ fontSize: 24, color: "#fff" }} />
           </Avatar>
-          <Typography variant="h5" sx={{ 
-            fontWeight: "bold", 
-            color: "#2c3e50"
-          }}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              color: "#2c3e50",
+            }}
+          >
             Jewellery Inventory
           </Typography>
         </Box>
 
         {itemsDbList.length == 0 ? (
-          <Alert 
-            severity="info" 
-            sx={{ 
+          <Alert
+            severity="info"
+            sx={{
               borderRadius: "12px",
               background: "linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%)",
-              border: "1px solid rgba(33, 150, 243, 0.2)"
+              border: "1px solid rgba(33, 150, 243, 0.2)",
             }}
           >
             No jewellery items found. Add your first item to get started!
@@ -576,39 +683,64 @@ export const JewelleryEntry: React.FC = () => {
           <TableContainer sx={{ borderRadius: "12px", overflow: "hidden" }}>
             <Table>
               <TableHead>
-                <TableRow sx={{ 
-                  background: "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)"
-                }}>
-                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Sr No.</TableCell>
-                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Item Name</TableCell>
-                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Category</TableCell>
-                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Material</TableCell>
-                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Purity</TableCell>
-                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Weight(g)</TableCell>
-                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Price</TableCell>
+                <TableRow
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
+                  }}
+                >
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Sr No.
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Item Name
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Category
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Material
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Purity
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Weight(g)
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Price
+                  </TableCell>
+                  <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>
+                    Action
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {itemsDbList.map((item, index) => (
-                  <TableRow 
+                  <TableRow
                     key={item.id}
                     sx={{
                       "&:nth-of-type(odd)": { background: "#f8f9fa" },
                       "&:hover": { background: "#e9ecef" },
-                      transition: "background 0.3s ease"
+                      transition: "background 0.3s ease",
                     }}
                   >
-                    <TableCell sx={{ fontWeight: "bold" }}>{index + 1}</TableCell>
-                    <TableCell sx={{ fontWeight: "500" }}>{item.itemName}</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>
+                      {index + 1}
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "500" }}>
+                      {item.itemName}
+                    </TableCell>
                     <TableCell>
-                      <Chip 
-                        label={item.categoryName} 
-                        size="small" 
-                        sx={{ 
-                          background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+                      <Chip
+                        label={item.categoryName}
+                        size="small"
+                        sx={{
+                          background:
+                            "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
                           color: "#fff",
-                          fontWeight: "bold"
-                        }} 
+                          fontWeight: "bold",
+                        }}
                       />
                     </TableCell>
                     <TableCell>{item.materialName}</TableCell>
@@ -617,6 +749,20 @@ export const JewelleryEntry: React.FC = () => {
                     <TableCell sx={{ fontWeight: "bold", color: "#2e7d32" }}>
                       ₹{item.price}
                     </TableCell>
+                    <TableCell>
+                      <Stack direction="row" spacing={1}>
+                        <IconButton size="small" sx={{ color: "#ffc107" }}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          sx={{ color: "#f44336" }}
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Stack>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -624,6 +770,16 @@ export const JewelleryEntry: React.FC = () => {
           </TableContainer>
         )}
       </Paper>
+
+      <ConfirmationDialog
+        open={isDialogOpen}
+        title="Delete Confirmation"
+        content={<p>Are you sure you want to delete this item?</p>}
+        onClose={handleCancel}
+        onConfirm={() => handleConfirmDelete()}
+        confirmText="Yes, Delete"
+        cancelText="Cancel"
+      />
     </Box>
   );
 };

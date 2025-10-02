@@ -8,9 +8,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  FormControl,
-  Select,
-  MenuItem,
   Checkbox,
   Accordion,
   AccordionSummary,
@@ -32,8 +29,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import CategoryIcon from "@mui/icons-material/Category";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import PersonIcon from "@mui/icons-material/Person";
-import EventIcon from "@mui/icons-material/Event";
 import SearchIcon from "@mui/icons-material/Search";
 
 const Home = () => {
@@ -45,8 +40,8 @@ const Home = () => {
   const [materials, setMaterials] = useState<IMaterialModal[]>([]);
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 100000 });
-  const [selectedOccasion, setSelectedOccasion] = useState<string>("");
-  const [selectedGender, setSelectedGender] = useState<string>("");
+  // const [selectedOccasion, setSelectedOccasion] = useState<string>("");
+  // const [selectedGender, setSelectedGender] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
@@ -91,15 +86,15 @@ const Home = () => {
     applyFilters(selectedCategory, selectedMaterials, newPriceRange, searchTerm);
   };
 
-  const handleOccasionChange = (occasion: string) => {
-    setSelectedOccasion(occasion);
-    applyFilters(selectedCategory, selectedMaterials, priceRange, searchTerm);
-  };
+  // const handleOccasionChange = (occasion: string) => {
+  //   setSelectedOccasion(occasion);
+  //   applyFilters(selectedCategory, selectedMaterials, priceRange, searchTerm);
+  // };
 
-  const handleGenderChange = (gender: string) => {
-    setSelectedGender(gender);
-    applyFilters(selectedCategory, selectedMaterials, priceRange, searchTerm);
-  };
+  // const handleGenderChange = (gender: string) => {
+  //   setSelectedGender(gender);
+  //   applyFilters(selectedCategory, selectedMaterials, priceRange, searchTerm);
+  // };
 
   const handleSearchChange = (search: string) => {
     setSearchTerm(search);
@@ -110,8 +105,6 @@ const Home = () => {
     setSelectedCategory("All");
     setSelectedMaterials([]);
     setPriceRange({ min: 0, max: 100000 });
-    setSelectedOccasion("");
-    setSelectedGender("");
     setSearchTerm("");
       setFilteredItems(itemList);
   };
@@ -570,7 +563,7 @@ const Home = () => {
               </Accordion>
 
               {/* Occasion Filter */}
-              <Accordion sx={{ mb: 2, boxShadow: "none" }}>
+              {/* <Accordion sx={{ mb: 2, boxShadow: "none" }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <EventIcon sx={{ color: "#ffc107", fontSize: 20 }} />
@@ -595,10 +588,10 @@ const Home = () => {
                     </Select>
                   </FormControl>
                 </AccordionDetails>
-              </Accordion>
+              </Accordion> */}
 
               {/* Gender Filter */}
-              <Accordion sx={{ mb: 2, boxShadow: "none" }}>
+              {/* <Accordion sx={{ mb: 2, boxShadow: "none" }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <PersonIcon sx={{ color: "#ffc107", fontSize: 20 }} />
@@ -621,7 +614,7 @@ const Home = () => {
                     </Select>
                   </FormControl>
                 </AccordionDetails>
-              </Accordion>
+              </Accordion> */}
 
             </Box>
           </Paper>
