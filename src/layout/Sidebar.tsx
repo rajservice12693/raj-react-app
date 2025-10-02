@@ -3,9 +3,6 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import CategoryIcon from "@mui/icons-material/Category";
 import LayersIcon from "@mui/icons-material/Layers";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import PeopleIcon from "@mui/icons-material/People";
-import SettingsIcon from "@mui/icons-material/Settings";
 
 import {
   Drawer,
@@ -52,16 +49,16 @@ const menuItems: MenuItem[] = [
     path: "/admin/dashboard/materialEntry",
     icon: <LayersIcon />,
   },
-  {
-    label: "Inventory",
-    path: "/admin/dashboard/inventory",
-    icon: <InventoryIcon />,
-  },
-  {
-    label: "Customers",
-    path: "/admin/dashboard/customers",
-    icon: <PeopleIcon />,
-  },
+  // {
+  //   label: "Inventory",
+  //   path: "/admin/dashboard/inventory",
+  //   icon: <InventoryIcon />,
+  // },
+  // {
+  //   label: "Customers",
+  //   path: "/admin/dashboard/customers",
+  //   icon: <PeopleIcon />,
+  // },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
@@ -203,7 +200,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
             },
           }}
         >
-          <ListItemIcon sx={{ color: "inherit", minWidth: "40px" }}>
+          {/* <ListItemIcon sx={{ color: "inherit", minWidth: "40px" }}>
             <SettingsIcon />
           </ListItemIcon>
           <ListItemText 
@@ -212,7 +209,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, onClose }) => {
               fontSize: "14px",
               fontWeight: "500",
             }}
-          />
+          /> */}
         </ListItemButton>
       </Box>
     </Drawer>
