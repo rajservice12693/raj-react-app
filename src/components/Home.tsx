@@ -105,8 +105,6 @@ const Home = () => {
     setSelectedCategory("All");
     setSelectedMaterials([]);
     setPriceRange({ min: 0, max: 100000 });
-    setSelectedOccasion("");
-    setSelectedGender("");
     setSearchTerm("");
       setFilteredItems(itemList);
   };
