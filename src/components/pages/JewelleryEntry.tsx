@@ -39,6 +39,7 @@ import type { IMaterialModal } from "../common/modals/IMaterialModal";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { ConfirmationDialog } from "../common/ConfirmationDialog";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 interface FormDataType {
   itemName: string;
@@ -79,15 +80,27 @@ export const JewelleryEntry: React.FC = () => {
     setDialogOpen(true);
   };
 
+  const handleToOpenDialog = () => {
+    setOpenDialog(true);
+    setFormData({
+      itemName: "",
+      categoryId: "",
+      materialId: "",
+      purity: "",
+      weight: "",
+      price: "",
+      stockQuantity: "",
+      description: "",
+      images: [],
+    });
+  };
   const handleCancel = () => {
     setDialogOpen(false);
   };
 
   const handleConfirmDelete = async () => {
     try {
-      console.log("pahila");
       const deleteResponse = await Service.deleteItems(selectedItemId);
-      console.log("response aa gyail", deleteResponse);
       if (deleteResponse?.status === 200) {
         toast.success("Item deleted successfully!");
         loadInitialMasterData();
@@ -101,7 +114,6 @@ export const JewelleryEntry: React.FC = () => {
       toast.error(`Error ${status || ""}: ${message}`);
       setDialogOpen(false);
     } finally {
-      console.log("finally");
       setDialogOpen(false);
     }
   };
@@ -112,7 +124,6 @@ export const JewelleryEntry: React.FC = () => {
       setCategoryList(cats);
       handleItemsList();
     } catch (err) {
-      console.error("Error loading categories", err);
       toast.error("Failed to load categories");
     }
   };
@@ -158,9 +169,24 @@ export const JewelleryEntry: React.FC = () => {
       const filesArray = Array.from(e.target.files);
       setFormData((prev) => ({
         ...prev,
-        images: filesArray,
+        images: [...prev.images, ...filesArray],
       }));
     }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files).filter((file) =>
+      file.type.startsWith("image/")
+    );
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ...files],
+    }));
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -219,9 +245,10 @@ export const JewelleryEntry: React.FC = () => {
   };
 
   const handleRemoveImage = (fileIndex: number) => {
-    console.log(fileIndex);
+    console.log("file index ", fileIndex);
     const formDataImageCopy = [...formData.images];
     formDataImageCopy.splice(fileIndex, 1);
+    console.log("files: ", formDataImageCopy);
     setFormData((prev) => ({
       ...prev,
       images: formDataImageCopy,
@@ -324,7 +351,7 @@ export const JewelleryEntry: React.FC = () => {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            onClick={() => setOpenDialog(true)}
+            onClick={() => handleToOpenDialog()}
             sx={{
               background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
               color: "#fff",
@@ -524,16 +551,46 @@ export const JewelleryEntry: React.FC = () => {
               rows={3}
               fullWidth
             />
-            <Button variant="outlined" component="label" fullWidth>
-              Upload Images
+            <Box
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              sx={{
+                border: "2px dashed #1976d2",
+                padding: "20px",
+                borderRadius: "8px",
+                textAlign: "center",
+                cursor: "pointer",
+                backgroundColor: "#f5f5f5",
+                transition: "0.3s",
+                "&:hover": {
+                  backgroundColor: "#e0e0e0",
+                },
+              }}
+              onClick={() => document.getElementById("file-input")?.click()}
+            >
+              <CloudUploadIcon fontSize="large" color="primary" />
+              <Typography variant="body1" mt={1}>
+                Drag & drop images here or click to upload
+              </Typography>
               <input
+                id="file-input"
                 type="file"
-                multiple
                 accept="image/*"
+                multiple
                 hidden
                 onChange={handleFileChange}
               />
-            </Button>
+            </Box>
+            {/* <input
+                type="file"
+                value="Upload Images"
+                multiple
+                accept="image/*"
+                className="input-button"
+                hidden
+                onChange={(e) => handleFileChange(e)}
+
+              /> */}
             {formData.images.length > 0 && (
               <Box sx={{ mt: 2 }}>
                 <ImageList cols={3} gap={12}>

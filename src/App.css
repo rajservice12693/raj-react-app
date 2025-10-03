@@ -40,3 +40,19 @@
 .read-the-docs {
   color: #888;
 }
+
+.input-button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.input-button:hover {
+  background-color: #1565c0;
+}
+
