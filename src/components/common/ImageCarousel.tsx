@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
-import { ChevronLeft, ChevronRight, Circle } from '@mui/icons-material';
+import { Box, IconButton, Typography, Modal } from '@mui/material';
+import { ChevronLeft, ChevronRight, Circle, Close } from '@mui/icons-material';
 
 interface ImageCarouselProps {
   images: string[];
@@ -26,6 +26,8 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
   overlayText
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImageIndex, setModalImageIndex] = useState(0);
 
   useEffect(() => {
     if (!autoPlay || images.length <= 1) return;
@@ -36,6 +38,32 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
     return () => clearInterval(interval);
   }, [autoPlay, autoPlayInterval, images.length]);
+
+  // Modal auto-play
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval> | null = null;
+    
+    if (isModalOpen && images.length > 1) {
+      interval = setInterval(() => {
+        setModalImageIndex((prev) => (prev + 1) % images.length);
+      }, 2000);
+    }
+    
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isModalOpen, images.length]);
+
+  const handleImageClick = () => {
+    setModalImageIndex(currentIndex);
+    setIsModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+  };
 
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
@@ -79,6 +107,7 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
         {images.map((image, index) => (
           <Box
             key={index}
+            onClick={handleImageClick}
             sx={{
               minWidth: '100%',
               height: '100%',
@@ -87,6 +116,19 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
               position: 'relative',
+              cursor: 'pointer',
+              '&:hover': {
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'rgba(255, 193, 7, 0.1)',
+                  zIndex: 2,
+                }
+              },
               '&::before': overlayText ? {
                 content: '""',
                 position: 'absolute',
@@ -301,6 +343,141 @@ export const ImageCarousel: React.FC<ImageCarouselProps> = ({
           ))}
         </Box>
       )}
+
+      {/* Image Modal */}
+      <Modal
+        open={isModalOpen}
+        onClose={handleModalClose}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          "& .MuiBackdrop-root": {
+            backgroundColor: "rgba(0, 0, 0, 0.9)",
+            backdropFilter: "blur(10px)",
+          }
+        }}
+      >
+        <Box
+          sx={{
+            position: "relative",
+            maxWidth: "90vw",
+            maxHeight: "90vh",
+            width: "auto",
+            height: "auto",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            outline: "none",
+          }}
+        >
+          {/* Close Button */}
+          <IconButton
+            onClick={handleModalClose}
+            sx={{
+              position: "absolute",
+              top: -50,
+              right: -50,
+              color: "#fff",
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              zIndex: 10,
+              "&:hover": {
+                backgroundColor: "rgba(255, 193, 7, 0.9)",
+                color: "#000",
+              }
+            }}
+          >
+            <Close />
+          </IconButton>
+
+          {/* Large Image */}
+          {images.length > 0 && (
+            <Box
+              component="img"
+              src={images[modalImageIndex]}
+              alt={`Carousel image ${modalImageIndex + 1}`}
+              sx={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                width: "auto",
+                height: "auto",
+                objectFit: "contain",
+                borderRadius: "12px",
+                boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+                transition: "all 0.3s ease",
+              }}
+            />
+          )}
+
+          {/* Modal Indicators */}
+          {images.length > 1 && (
+            <Box
+              sx={{
+                position: "absolute",
+                bottom: -60,
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                gap: 1,
+                zIndex: 10,
+              }}
+            >
+              {images.map((_, index) => (
+                <Box
+                  key={index}
+                  onClick={() => setModalImageIndex(index)}
+                  sx={{
+                    width: "12px",
+                    height: "12px",
+                    borderRadius: "50%",
+                    backgroundColor: modalImageIndex === index ? "#ffc107" : "rgba(255, 255, 255, 0.5)",
+                    border: modalImageIndex === index ? "2px solid #fff" : "1px solid rgba(255, 255, 255, 0.3)",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      backgroundColor: modalImageIndex === index ? "#ff8f00" : "rgba(255, 255, 255, 0.8)",
+                      transform: "scale(1.2)"
+                    }
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+
+          {/* Auto-play indicator for modal */}
+          {images.length > 1 && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: -50,
+                left: -50,
+                background: "rgba(0, 0, 0, 0.7)",
+                color: "#fff",
+                borderRadius: "12px",
+                px: 1.5,
+                py: 0.5,
+                fontSize: "0.8rem",
+                fontWeight: "bold",
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                zIndex: 10,
+              }}
+            >
+              <Box
+                sx={{
+                  width: "8px",
+                  height: "8px",
+                  borderRadius: "50%",
+                  backgroundColor: "#ffc107",
+                  animation: "pulse 1.5s ease-in-out infinite"
+                }}
+              />
+              Auto Play
+            </Box>
+          )}
+        </Box>
+      </Modal>
     </Box>
   );
 };
