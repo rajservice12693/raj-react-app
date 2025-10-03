@@ -5,12 +5,6 @@ export class LoginService {
   public static login = async (loginForData: any) => {
     const response = await axios.post(`${BASE_URL}/login`, loginForData);
     return response?.data;
-    // return {
-    //   status: 200,
-    //   data: {
-    //     userName: "admin",
-    //   },
-    // };
   };
 
   public static getItems = async () => {
