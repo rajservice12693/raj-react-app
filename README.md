@@ -1,69 +1,173 @@
-# React + TypeScript + Vite
+# ✨ PAJ App React
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![React](https://img.shields.io/badge/React-19-blue.svg)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8+-blue.svg)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-6.0+-purple.svg)](https://vitejs.dev/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
 
-Currently, two official plugins are available:
+A modern React-based web application for managing jewellery inventory, built with TypeScript and Vite. Features a sleek admin dashboard, secure authentication, and responsive design.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📋 Table of Contents
 
-## Expanding the ESLint configuration
+- [⚡ Quick Start](#-quick-start)
+- [🚀 Features](#-features)
+- [🎥 Demo](#-demo)
+- [🛠️ Tech Stack](#-tech-stack)
+- [📋 Prerequisites](#-prerequisites)
+- [🛠️ Installation](#-installation)
+- [🚀 Running Locally](#-running-locally)
+- [🏗️ Building for Production](#-building-for-production)
+- [🐳 Docker](#-docker)
+- [🔍 Linting](#-linting)
+- [📂 Project Structure](#-project-structure)
+- [📜 Scripts](#-scripts)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Features
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- 🔐 **User Authentication & Authorization** - Secure login system
+- 📊 **Admin Dashboard** - Comprehensive inventory management
+- 💎 **Jewellery Management** - Add, edit, and manage jewellery items
+- 🏷️ **Material & Category Management** - Organize inventory efficiently
+- 🖼️ **Image Carousel** - Beautiful product display
+- 📱 **Responsive Design** - Works on all devices with Material-UI
+- 🛡️ **Protected Routes** - Secure access control
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 🎥 Demo
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+![PAJ App Screenshot](https://via.placeholder.com/800x400?text=PAJ+App+Screenshot)
+
+*Add a screenshot of your application here*
+
+## 🛠️ Tech Stack
+
+| Category | Technology | Version |
+|----------|------------|---------|
+| **Frontend** | React | 19 |
+| **Language** | TypeScript | 5.8+ |
+| **Build Tool** | Vite | 6.0+ |
+| **UI Library** | Material-UI (MUI) | 7.3+ |
+| **Routing** | React Router DOM | 7.8+ |
+| **HTTP Client** | Axios | 1.12+ |
+| **Notifications** | React Toastify | 11.0+ |
+| **Image Carousel** | React Responsive Carousel | 3.2+ |
+| **Styling** | Emotion (CSS-in-JS) | 11.14+ |
+
+## ⚡ Quick Start
+
+```bash
+git clone <repository-url>
+cd raj-react-app
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Then open `http://localhost:5173` in your browser.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📋 Prerequisites
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- 🟢 Node.js (version 18 or higher)
+- 📦 npm or yarn
+
+## 🛠️ Installation
+
+1. 📥 Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd raj-react-app
+   ```
+
+2. 📦 Install dependencies:
+   ```bash
+   npm install
+   ```
+
+## 🚀 Running Locally
+
+To start the development server:
+
+```bash
+npm run dev
 ```
+
+🌐 The application will be available at `http://localhost:5173`.
+
+## 🏗️ Building for Production
+
+To build the application for production:
+
+```bash
+npm run build
+```
+
+📁 The built files will be in the `dist` directory.
+
+## 👀 Preview Production Build
+
+To preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## 🐳 Docker
+
+### 🏗️ Building the Docker Image
+
+```bash
+docker build -t paj-app-react .
+```
+
+### ▶️ Running the Docker Container
+
+```bash
+docker run -p 80:80 paj-app-react
+```
+
+🌐 The application will be available at `http://localhost`.
+
+## 🔍 Linting
+
+To run ESLint:
+
+```bash
+npm run lint
+```
+
+## 📂 Project Structure
+
+```
+src/
+├── components/
+│   ├── common/          # 🔄 Reusable components
+│   ├── pages/           # 📄 Page components
+│   └── admin/           # 👑 Admin-specific components
+├── contexts/            # 🔄 React contexts
+├── layout/              # 🎨 Layout components
+├── services/            # 🌐 API services
+├── constants/           # 📊 Application constants
+└── assets/              # 🖼️ Static assets
+```
+
+## 📜 Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | 🚀 Start development server |
+| `npm run build` | 🏗️ Build for production |
+| `npm run preview` | 👀 Preview production build |
+| `npm run lint` | 🔍 Run ESLint |
+
+## 🤝 Contributing
+
+1. 🍴 Fork the repository
+2. 🌿 Create a feature branch
+3. 🔧 Make your changes
+4. ✅ Run tests and linting
+5. 📤 Submit a pull request
+
+## 📄 License
+
+This project is private and proprietary.
