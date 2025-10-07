@@ -1,13 +1,23 @@
-import { Card, CardContent, Typography, Box, Chip, Modal, IconButton } from "@mui/material";
+import { Card, CardContent, Typography, Box, Chip, Modal, IconButton, Tooltip } from "@mui/material";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState, useEffect } from "react";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import RotateLeftIcon from "@mui/icons-material/RotateLeft";
+import { useState, useEffect, useRef } from "react";
 
 const ItemCard = ({ item }: { item: any }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImageIndex, setModalImageIndex] = useState(0);
+  
+  // Zoom functionality states
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [panPosition, setPanPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const imageRef = useRef<HTMLImageElement>(null);
 
 
   // Auto-play on hover
@@ -59,7 +69,99 @@ const ItemCard = ({ item }: { item: any }) => {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+    // Reset zoom and pan when closing modal
+    setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
   };
+
+  // Zoom functionality
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev * 1.5, 5)); // Max zoom 5x
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => {
+      const newZoom = prev / 1.5;
+      if (newZoom < 1) {
+        setPanPosition({ x: 0, y: 0 }); // Reset pan when zooming out to fit
+        return 1;
+      }
+      return newZoom;
+    });
+  };
+
+  const handleResetZoom = () => {
+    setZoomLevel(1);
+    setPanPosition({ x: 0, y: 0 });
+  };
+
+  // Mouse wheel zoom
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+      handleZoomIn();
+    } else {
+      handleZoomOut();
+    }
+  };
+
+  // Pan functionality
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (zoomLevel > 1) {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - panPosition.x, y: e.clientY - panPosition.y });
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isDragging && zoomLevel > 1) {
+      setPanPosition({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isModalOpen) {
+        switch (e.key) {
+          case '+':
+          case '=':
+            e.preventDefault();
+            handleZoomIn();
+            break;
+          case '-':
+            e.preventDefault();
+            handleZoomOut();
+            break;
+          case '0':
+            e.preventDefault();
+            handleResetZoom();
+            break;
+          case 'Escape':
+            handleModalClose();
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isModalOpen]);
+
+  // Reset zoom when image changes
+  useEffect(() => {
+    if (isModalOpen) {
+      setZoomLevel(1);
+      setPanPosition({ x: 0, y: 0 });
+    }
+  }, [modalImageIndex, isModalOpen]);
 
   return (
     <Card
@@ -438,6 +540,7 @@ const ItemCard = ({ item }: { item: any }) => {
                 justifyContent: "center",
                 outline: "none",
               }}
+              onWheel={handleWheel}
             >
               {/* Close Button */}
               <IconButton
@@ -458,12 +561,112 @@ const ItemCard = ({ item }: { item: any }) => {
                 <CloseIcon />
               </IconButton>
 
-              {/* Large Image */}
+              {/* Zoom Controls */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: -50,
+                  left: -50,
+                  display: "flex",
+                  gap: 1,
+                  zIndex: 10,
+                }}
+              >
+                <Tooltip title="Zoom In (+)" placement="bottom">
+                  <IconButton
+                    onClick={handleZoomIn}
+                    disabled={zoomLevel >= 5}
+                    sx={{
+                      color: "#fff",
+                      backgroundColor: "rgba(0, 0, 0, 0.7)",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 193, 7, 0.9)",
+                        color: "#000",
+                      },
+                      "&:disabled": {
+                        backgroundColor: "rgba(0, 0, 0, 0.3)",
+                        color: "rgba(255, 255, 255, 0.3)",
+                      }
+                    }}
+                  >
+                    <ZoomInIcon />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Zoom Out (-)" placement="bottom">
+                  <IconButton
+                    onClick={handleZoomOut}
+                    disabled={zoomLevel <= 1}
+                    sx={{
+                      color: "#fff",
+                      backgroundColor: "rgba(0, 0, 0, 0.7)",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 193, 7, 0.9)",
+                        color: "#000",
+                      },
+                      "&:disabled": {
+                        backgroundColor: "rgba(0, 0, 0, 0.3)",
+                        color: "rgba(255, 255, 255, 0.3)",
+                      }
+                    }}
+                  >
+                    <ZoomOutIcon />
+                  </IconButton>
+                </Tooltip>
+
+                <Tooltip title="Reset Zoom (0)" placement="bottom">
+                  <IconButton
+                    onClick={handleResetZoom}
+                    disabled={zoomLevel === 1}
+                    sx={{
+                      color: "#fff",
+                      backgroundColor: "rgba(0, 0, 0, 0.7)",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 193, 7, 0.9)",
+                        color: "#000",
+                      },
+                      "&:disabled": {
+                        backgroundColor: "rgba(0, 0, 0, 0.3)",
+                        color: "rgba(255, 255, 255, 0.3)",
+                      }
+                    }}
+                  >
+                    <RotateLeftIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+
+              {/* Zoom Level Indicator */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: -50,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  background: "rgba(0, 0, 0, 0.7)",
+                  color: "#fff",
+                  borderRadius: "12px",
+                  px: 1.5,
+                  py: 0.5,
+                  fontSize: "0.8rem",
+                  fontWeight: "bold",
+                  zIndex: 10,
+                }}
+              >
+                {Math.round(zoomLevel * 100)}%
+              </Box>
+
+              {/* Large Image with Zoom and Pan */}
               {item.images && item.images.length > 0 && (
                 <Box
+                  ref={imageRef}
                   component="img"
                   src={item.images[modalImageIndex]}
                   alt={item.itemName || `${item.materialName} ${item.categoryName}`}
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
                   sx={{
                     maxWidth: "100%",
                     maxHeight: "100%",
@@ -472,7 +675,10 @@ const ItemCard = ({ item }: { item: any }) => {
                     objectFit: "contain",
                     borderRadius: "12px",
                     boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
-                    transition: "all 0.3s ease",
+                    transition: zoomLevel === 1 ? "all 0.3s ease" : "none",
+                    transform: `scale(${zoomLevel}) translate(${panPosition.x / zoomLevel}px, ${panPosition.y / zoomLevel}px)`,
+                    cursor: zoomLevel > 1 ? (isDragging ? "grabbing" : "grab") : "default",
+                    userSelect: "none",
                   }}
                 />
               )}
@@ -518,7 +724,7 @@ const ItemCard = ({ item }: { item: any }) => {
                   sx={{
                     position: "absolute",
                     top: -50,
-                    left: -50,
+                    right: 50,
                     background: "rgba(0, 0, 0, 0.7)",
                     color: "#fff",
                     borderRadius: "12px",
