@@ -7,6 +7,7 @@ import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useState, useEffect, useRef } from "react";
+import "./ItemCard.css";
 
 const ItemCard = ({ item }: { item: any }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -174,6 +175,7 @@ const ItemCard = ({ item }: { item: any }) => {
 
   return (
     <Card
+      className="item-card"
       onMouseEnter={() => {
         console.log('Mouse entered card:', item.itemName || item.materialName);
         setIsHovered(true);
@@ -182,152 +184,34 @@ const ItemCard = ({ item }: { item: any }) => {
         console.log('Mouse left card:', item.itemName || item.materialName);
         setIsHovered(false);
       }}
-      sx={{
-        height: "100%",
-        maxHeight: "380px",
-        display: "flex",
-        flexDirection: "column",
-        transition: "all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-        background: "linear-gradient(145deg, #ffffff 0%, #fefefe 50%, #f8f9fa 100%)",
-        border: "1px solid rgba(255, 193, 7, 0.1)",
-        borderRadius: "16px",
-        boxShadow: "0 3px 15px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1)",
-        position: "relative",
-        overflow: "hidden",
-        backdropFilter: "blur(20px)",
-            "&:hover": {
-              transform: "translateY(-4px)",
-              boxShadow: "0 10px 25px rgba(255, 193, 7, 0.15), 0 3px 15px rgba(0, 0, 0, 0.1)",
-              border: "1px solid rgba(255, 193, 7, 0.3)",
-              "& .jewelry-image": {
-                transform: "scale(1.02)",
-                "& img": {
-                  transform: "scale(1.05)",
-                }
-              },
-              "& .carousel-indicators": {
-                opacity: 1,
-              }
-            },
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "2px",
-          background: "linear-gradient(90deg, #ffc107 0%, #ff8f00 50%, #ffc107 100%)",
-          opacity: 0.8
-        }
-      }}
     >
       {/* Jewelry Image Carousel */}
-      <Box
-        className="jewelry-image"
-        sx={{
-          height: "150px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          overflow: "hidden",
-          transition: "all 0.4s ease",
-          background: item.images && item.images.length > 0 
-            ? "linear-gradient(135deg, #fff8e1 0%, #ffecb3 30%, #ffe0b2 70%, #fff3e0 100%)"
-            : "linear-gradient(135deg, #fff8e1 0%, #ffecb3 30%, #ffe0b2 70%, #fff3e0 100%)",
-          "&::after": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: item.images && item.images.length > 0 
-              ? "linear-gradient(135deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.05) 100%)"
-              : "radial-gradient(circle at 30% 20%, rgba(255, 193, 7, 0.1) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255, 143, 0, 0.08) 0%, transparent 50%)",
-            opacity: 0.6,
-            zIndex: 2
-          }
-        }}
-      >
+      <Box className="jewelry-image">
         {/* Actual Image Element for Better Centering */}
         {item.images && item.images.length > 0 ? (
           <Box
-            sx={{
-              position: "relative",
-              zIndex: 3, // Higher than the ::after pseudo-element
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
+            className="image-container"
             onClick={handleImageClick}
           >
             <Box
               component="img"
               src={item.images[currentImageIndex]}
               alt={item.itemName || `${item.materialName} ${item.categoryName}`}
-              sx={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                width: "auto",
-                height: "auto",
-                objectFit: "contain",
-                objectPosition: "center center",
-                transition: "all 0.4s ease",
-                pointerEvents: "none", // Prevent image from interfering with click
-                "&:hover": {
-                  transform: "scale(1.05)",
-                  filter: "brightness(1.1)",
-                }
-              }}
+              className="image-element"
             />
           </Box>
         ) : null}
         {/* Show diamond icon only if no images */}
         {(!item.images || item.images.length === 0) && (
-          <Box sx={{ 
-            position: "relative",
-            zIndex: 3,
-            "& .diamond-icon": {
-              color: "#ffc107",
-              fontSize: "2.2rem",
-              filter: "drop-shadow(0 3px 6px rgba(255, 193, 7, 0.3)) drop-shadow(0 0 15px rgba(255, 193, 7, 0.2))",
-              animation: "sparkle 3s ease-in-out infinite alternate",
-              transition: "all 0.3s ease"
-            }
-          }}>
+          <Box className="diamond-icon-container">
             <DiamondIcon className="diamond-icon" />
           </Box>
         )}
 
         {/* Auto-play indicator */}
         {isHovered && item.images && item.images.length > 1 && (
-          <Box sx={{
-            position: "absolute",
-            top: "8px",
-            right: "8px",
-            zIndex: 4,
-            background: "rgba(0, 0, 0, 0.7)",
-            color: "#fff",
-            borderRadius: "12px",
-            px: 1,
-            py: 0.5,
-            fontSize: "0.7rem",
-            fontWeight: "bold",
-            display: "flex",
-            alignItems: "center",
-            gap: 0.5
-          }}>
-            <Box sx={{
-              width: "6px",
-              height: "6px",
-              borderRadius: "50%",
-              backgroundColor: "#ffc107",
-              animation: "pulse 1.5s ease-in-out infinite"
-            }} />
+          <Box className="auto-play-indicator">
+            <Box className="auto-play-dot" />
             Auto
           </Box>
         )}
@@ -337,34 +221,12 @@ const ItemCard = ({ item }: { item: any }) => {
         {item.images && item.images.length > 1 && (
           <Box 
             className="carousel-indicators"
-            sx={{
-              position: "absolute",
-              bottom: "8px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              display: "flex",
-              gap: 0.5,
-              zIndex: 4,
-              opacity: isHovered ? 1 : 0,
-              transition: "all 0.3s ease"
-            }}
+            style={{ opacity: isHovered ? 1 : 0 }}
           >
             {item.images.map((_: any, index: number) => (
               <Box
                 key={index}
-                sx={{
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "50%",
-                  backgroundColor: currentImageIndex === index ? "#ffc107" : "rgba(255, 255, 255, 0.6)",
-                  border: currentImageIndex === index ? "2px solid #fff" : "1px solid rgba(255, 255, 255, 0.3)",
-                  transition: "all 0.3s ease",
-                  cursor: "pointer",
-                  "&:hover": {
-                    backgroundColor: currentImageIndex === index ? "#ff8f00" : "rgba(255, 255, 255, 0.8)",
-                    transform: "scale(1.2)"
-                  }
-                }}
+                className={`indicator-dot ${currentImageIndex === index ? 'active' : ''}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   setCurrentImageIndex(index);
@@ -432,22 +294,11 @@ const ItemCard = ({ item }: { item: any }) => {
         {/* </Box> */}
       </Box>
 
-      <CardContent className="card-content" sx={{ 
-        flexGrow: 1, 
-        p: 1.5,
-        transition: "transform 0.3s ease"
-      }}>
+      <CardContent className="card-content">
         {/* Title */}
         <Typography 
           variant="h6" 
-          sx={{ 
-            fontWeight: "600",
-            fontSize: "0.8rem",
-            color: "#3e2723",
-            mb: 0.8,
-            lineHeight: 1.3,
-            letterSpacing: "0.02em"
-          }}
+          className="item-title"
         >
           {item.itemName || `${item.materialName} ${item.categoryName}`}
         </Typography>
@@ -455,78 +306,29 @@ const ItemCard = ({ item }: { item: any }) => {
         {/* Description */}
         <Typography 
           variant="body2" 
-          sx={{ 
-            color: "#8d6e63",
-            mb: 1,
-            fontSize: "0.7rem",
-            lineHeight: 1.4,
-            fontStyle: "italic",
-            opacity: 0.8
-          }}
+          className="item-description"
         >
           {item.description || `Exquisite ${item.materialName.toLowerCase()} ${item.categoryName.toLowerCase()} crafted with precision`}
         </Typography>
         
         {/* Details */}
-        <Box sx={{ 
-          display: "flex", 
-          flexDirection: "column", 
-          gap: 1, 
-          mb: 1,
-          p: 1,
-          background: "linear-gradient(135deg, rgba(255, 193, 7, 0.03) 0%, rgba(255, 143, 0, 0.02) 100%)",
-          borderRadius: "8px",
-          border: "1px solid rgba(255, 193, 7, 0.1)"
-        }}>
-          <Box sx={{ 
-            display: "flex", 
-            justifyContent: "space-between", 
-            alignItems: "center",
-            py: 0.5
-          }}>
-            <Typography variant="body2" sx={{ 
-              color: "#8d6e63", 
-              fontSize: "0.7rem",
-              fontWeight: "500",
-              textTransform: "uppercase",
-              letterSpacing: "0.05em"
-            }}>
+        <Box className="details-container">
+          <Box className="detail-row">
+            <Typography variant="body2" className="detail-label">
               Purity
             </Typography>
             <Chip 
               label={item.purity} 
               size="small" 
-              sx={{ 
-                background: "linear-gradient(135deg, #ffc107, #ff8f00)",
-                color: "#5d4037",
-                fontWeight: "bold",
-                fontSize: "0.65rem",
-                borderRadius: "6px",
-                boxShadow: "0 2px 8px rgba(255, 193, 7, 0.2)"
-              }}
+              className="purity-chip"
             />
           </Box>
           
-          <Box sx={{ 
-            display: "flex", 
-            justifyContent: "space-between", 
-            alignItems: "center",
-            py: 0.5
-          }}>
-            <Typography variant="body2" sx={{ 
-              color: "#8d6e63", 
-              fontSize: "0.7rem",
-              fontWeight: "500",
-              textTransform: "uppercase",
-              letterSpacing: "0.05em"
-            }}>
+          <Box className="detail-row">
+            <Typography variant="body2" className="detail-label">
               Weight
             </Typography>
-            <Typography variant="body2" sx={{ 
-              fontWeight: "600", 
-              color: "#3e2723",
-              fontSize: "0.8rem"
-            }}>
+            <Typography variant="body2" className="detail-value">
               {item.weight}g
             </Typography>
           </Box>
@@ -549,65 +351,24 @@ const ItemCard = ({ item }: { item: any }) => {
             }}
           >
             <Box
-              sx={{
-                position: "relative",
-                maxWidth: "45vw",
-                maxHeight: "55vh",
-                width: "auto",
-                height: "auto",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                outline: "none",
-              }}
+              className="modal-container"
               onWheel={handleWheel}
             >
               {/* Close Button */}
               <IconButton
                 onClick={handleModalClose}
-                sx={{
-                  position: "absolute",
-                  top: -50,
-                  right: -50,
-                  color: "#fff",
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  zIndex: 10,
-                  "&:hover": {
-                    backgroundColor: "rgba(255, 193, 7, 0.9)",
-                    color: "#000",
-                  }
-                }}
+                className="modal-close-button"
               >
                 <CloseIcon />
               </IconButton>
 
               {/* Zoom Controls */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: -50,
-                  left: -50,
-                  display: "flex",
-                  gap: 1,
-                  zIndex: 10,
-                }}
-              >
+              <Box className="modal-zoom-controls">
                 <Tooltip title="Zoom In (+)" placement="bottom">
                   <IconButton
                     onClick={handleZoomIn}
                     disabled={zoomLevel >= 5}
-                    sx={{
-                      color: "#fff",
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 193, 7, 0.9)",
-                        color: "#000",
-                      },
-                      "&:disabled": {
-                        backgroundColor: "rgba(0, 0, 0, 0.3)",
-                        color: "rgba(255, 255, 255, 0.3)",
-                      }
-                    }}
+                    className="modal-zoom-button"
                   >
                     <ZoomInIcon />
                   </IconButton>
@@ -617,18 +378,7 @@ const ItemCard = ({ item }: { item: any }) => {
                   <IconButton
                     onClick={handleZoomOut}
                     disabled={zoomLevel <= 1}
-                    sx={{
-                      color: "#fff",
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 193, 7, 0.9)",
-                        color: "#000",
-                      },
-                      "&:disabled": {
-                        backgroundColor: "rgba(0, 0, 0, 0.3)",
-                        color: "rgba(255, 255, 255, 0.3)",
-                      }
-                    }}
+                    className="modal-zoom-button"
                   >
                     <ZoomOutIcon />
                   </IconButton>
@@ -638,18 +388,7 @@ const ItemCard = ({ item }: { item: any }) => {
                   <IconButton
                     onClick={handleResetZoom}
                     disabled={zoomLevel === 1}
-                    sx={{
-                      color: "#fff",
-                      backgroundColor: "rgba(0, 0, 0, 0.7)",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 193, 7, 0.9)",
-                        color: "#000",
-                      },
-                      "&:disabled": {
-                        backgroundColor: "rgba(0, 0, 0, 0.3)",
-                        color: "rgba(255, 255, 255, 0.3)",
-                      }
-                    }}
+                    className="modal-zoom-button"
                   >
                     <RotateLeftIcon />
                   </IconButton>
@@ -657,22 +396,7 @@ const ItemCard = ({ item }: { item: any }) => {
               </Box>
 
               {/* Zoom Level Indicator */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: -50,
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  background: "rgba(0, 0, 0, 0.7)",
-                  color: "#fff",
-                  borderRadius: "12px",
-                  px: 1.5,
-                  py: 0.5,
-                  fontSize: "0.8rem",
-                  fontWeight: "bold",
-                  zIndex: 10,
-                }}
-              >
+              <Box className="modal-zoom-level">
                 {Math.round(zoomLevel * 100)}%
               </Box>
 
@@ -680,19 +404,7 @@ const ItemCard = ({ item }: { item: any }) => {
               {item.images && item.images.length > 1 && (
                 <IconButton
                   onClick={handlePreviousImage}
-                  sx={{
-                    position: "absolute",
-                    left: -60,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "#fff",
-                    backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    zIndex: 10,
-                    "&:hover": {
-                      backgroundColor: "rgba(255, 193, 7, 0.9)",
-                      color: "#000",
-                    }
-                  }}
+                  className="modal-nav-arrow left"
                 >
                   <ChevronLeftIcon />
                 </IconButton>
@@ -702,19 +414,7 @@ const ItemCard = ({ item }: { item: any }) => {
               {item.images && item.images.length > 1 && (
                 <IconButton
                   onClick={handleNextImage}
-                  sx={{
-                    position: "absolute",
-                    right: -60,
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    color: "#fff",
-                    backgroundColor: "rgba(0, 0, 0, 0.7)",
-                    zIndex: 10,
-                    "&:hover": {
-                      backgroundColor: "rgba(255, 193, 7, 0.9)",
-                      color: "#000",
-                    }
-                  }}
+                  className="modal-nav-arrow right"
                 >
                   <ChevronRightIcon />
                 </IconButton>
@@ -731,52 +431,23 @@ const ItemCard = ({ item }: { item: any }) => {
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
                   onMouseLeave={handleMouseUp}
-                  sx={{
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    width: "auto",
-                    height: "auto",
-                    objectFit: "contain",
-                    borderRadius: "12px",
-                    boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+                  className={`modal-image ${zoomLevel > 1 ? 'zoomable' : ''}`}
+                  style={{
                     transition: zoomLevel === 1 ? "all 0.3s ease" : "none",
                     transform: `scale(${zoomLevel}) translate(${panPosition.x / zoomLevel}px, ${panPosition.y / zoomLevel}px)`,
                     cursor: zoomLevel > 1 ? (isDragging ? "grabbing" : "grab") : "default",
-                    userSelect: "none",
                   }}
                 />
               )}
 
               {/* Modal Indicators */}
               {item.images && item.images.length > 1 && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    bottom: -60,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    display: "flex",
-                    gap: 1,
-                    zIndex: 10,
-                  }}
-                >
+                <Box className="modal-indicators">
                   {item.images.map((_: any, index: number) => (
                     <Box
                       key={index}
                       onClick={() => setModalImageIndex(index)}
-                      sx={{
-                        width: "12px",
-                        height: "12px",
-                        borderRadius: "50%",
-                        backgroundColor: modalImageIndex === index ? "#ffc107" : "rgba(255, 255, 255, 0.5)",
-                        border: modalImageIndex === index ? "2px solid #fff" : "1px solid rgba(255, 255, 255, 0.3)",
-                        cursor: "pointer",
-                        transition: "all 0.3s ease",
-                        "&:hover": {
-                          backgroundColor: modalImageIndex === index ? "#ff8f00" : "rgba(255, 255, 255, 0.8)",
-                          transform: "scale(1.2)"
-                        }
-                      }}
+                      className={`modal-indicator-dot ${modalImageIndex === index ? 'active' : ''}`}
                     />
                   ))}
                 </Box>
@@ -784,21 +455,7 @@ const ItemCard = ({ item }: { item: any }) => {
 
               {/* Image Counter */}
               {item.images && item.images.length > 1 && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: -50,
-                    right: 50,
-                    background: "rgba(0, 0, 0, 0.7)",
-                    color: "#fff",
-                    borderRadius: "12px",
-                    px: 1.5,
-                    py: 0.5,
-                    fontSize: "0.8rem",
-                    fontWeight: "bold",
-                    zIndex: 10,
-                  }}
-                >
+                <Box className="image-counter">
                   {modalImageIndex + 1} / {item.images.length}
                 </Box>
               )}
