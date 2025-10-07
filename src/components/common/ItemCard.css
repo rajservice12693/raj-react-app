@@ -270,11 +270,21 @@
   color: #fff;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 10;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .modal-close-button:hover {
   background-color: rgba(255, 193, 7, 0.9);
   color: #000;
+  transform: scale(1.1);
 }
 
 .modal-zoom-controls {
@@ -289,16 +299,28 @@
 .modal-zoom-button {
   color: #fff;
   background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .modal-zoom-button:hover {
   background-color: rgba(255, 193, 7, 0.9);
   color: #000;
+  transform: scale(1.1);
 }
 
 .modal-zoom-button:disabled {
   background-color: rgba(0, 0, 0, 0.3);
   color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+  transform: none;
 }
 
 .modal-zoom-level {
@@ -323,11 +345,21 @@
   color: #fff;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 10;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .modal-nav-arrow:hover {
   background-color: rgba(255, 193, 7, 0.9);
   color: #000;
+  transform: translateY(-50%) scale(1.1);
 }
 
 .modal-nav-arrow.left {
@@ -348,6 +380,7 @@
   border-radius: 12px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   user-select: none;
+  display: block;
 }
 
 .modal-image.zoomable {
@@ -377,6 +410,7 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
   transition: all 0.3s ease;
+  display: block;
 }
 
 .modal-indicator-dot.active {
@@ -405,6 +439,9 @@
   font-size: 0.8rem;
   font-weight: bold;
   z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Animations */
