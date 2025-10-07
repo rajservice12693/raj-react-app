@@ -4,6 +4,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useState, useEffect, useRef } from "react";
 
 const ItemCard = ({ item }: { item: any }) => {
@@ -43,22 +45,18 @@ const ItemCard = ({ item }: { item: any }) => {
     };
   }, [isHovered, item.images]);
 
-  // Modal auto-play
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval> | null = null;
-    
-    if (isModalOpen && item.images && item.images.length > 1) {
-      interval = setInterval(() => {
-        setModalImageIndex((prev) => (prev + 1) % item.images.length);
-      }, 2000); // Slightly slower for modal viewing
+  // Navigation functions for modal
+  const handlePreviousImage = () => {
+    if (item.images && item.images.length > 1) {
+      setModalImageIndex((prev) => (prev - 1 + item.images.length) % item.images.length);
     }
-    
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [isModalOpen, item.images]);
+  };
+
+  const handleNextImage = () => {
+    if (item.images && item.images.length > 1) {
+      setModalImageIndex((prev) => (prev + 1) % item.images.length);
+    }
+  };
 
   const handleImageClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -146,6 +144,14 @@ const ItemCard = ({ item }: { item: any }) => {
           case '0':
             e.preventDefault();
             handleResetZoom();
+            break;
+          case 'ArrowLeft':
+            e.preventDefault();
+            handlePreviousImage();
+            break;
+          case 'ArrowRight':
+            e.preventDefault();
+            handleNextImage();
             break;
           case 'Escape':
             handleModalClose();
@@ -545,8 +551,8 @@ const ItemCard = ({ item }: { item: any }) => {
             <Box
               sx={{
                 position: "relative",
-                maxWidth: "90vw",
-                maxHeight: "90vh",
+                maxWidth: "60vw",
+                maxHeight: "70vh",
                 width: "auto",
                 height: "auto",
                 display: "flex",
@@ -670,6 +676,50 @@ const ItemCard = ({ item }: { item: any }) => {
                 {Math.round(zoomLevel * 100)}%
               </Box>
 
+              {/* Left Navigation Arrow */}
+              {item.images && item.images.length > 1 && (
+                <IconButton
+                  onClick={handlePreviousImage}
+                  sx={{
+                    position: "absolute",
+                    left: -60,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "#fff",
+                    backgroundColor: "rgba(0, 0, 0, 0.7)",
+                    zIndex: 10,
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 193, 7, 0.9)",
+                      color: "#000",
+                    }
+                  }}
+                >
+                  <ChevronLeftIcon />
+                </IconButton>
+              )}
+
+              {/* Right Navigation Arrow */}
+              {item.images && item.images.length > 1 && (
+                <IconButton
+                  onClick={handleNextImage}
+                  sx={{
+                    position: "absolute",
+                    right: -60,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "#fff",
+                    backgroundColor: "rgba(0, 0, 0, 0.7)",
+                    zIndex: 10,
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 193, 7, 0.9)",
+                      color: "#000",
+                    }
+                  }}
+                >
+                  <ChevronRightIcon />
+                </IconButton>
+              )}
+
               {/* Large Image with Zoom and Pan */}
               {item.images && item.images.length > 0 && (
                 <Box
@@ -732,7 +782,7 @@ const ItemCard = ({ item }: { item: any }) => {
                 </Box>
               )}
 
-              {/* Auto-play indicator for modal */}
+              {/* Image Counter */}
               {item.images && item.images.length > 1 && (
                 <Box
                   sx={{
@@ -746,22 +796,10 @@ const ItemCard = ({ item }: { item: any }) => {
                     py: 0.5,
                     fontSize: "0.8rem",
                     fontWeight: "bold",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.5,
                     zIndex: 10,
                   }}
                 >
-                  <Box
-                    sx={{
-                      width: "8px",
-                      height: "8px",
-                      borderRadius: "50%",
-                      backgroundColor: "#ffc107",
-                      animation: "pulse 1.5s ease-in-out infinite"
-                    }}
-                  />
-                  Auto Play
+                  {modalImageIndex + 1} / {item.images.length}
                 </Box>
               )}
             </Box>
