@@ -6,7 +6,6 @@ import {
   Typography,
   TextField,
   Button,
-  Link,
   Alert,
   IconButton,
   InputAdornment,
@@ -340,7 +339,7 @@ const LoginPage: React.FC = () => {
           </Button>
         </Box>
 
-        <Box sx={{ 
+        {/* <Box sx={{ 
           mt: 2.5, 
           display: "flex", 
           flexDirection: { xs: "column", sm: "row" },
@@ -390,7 +389,7 @@ const LoginPage: React.FC = () => {
               Sign Up
             </Link>
           </Box>
-        </Box>
+        </Box> */}
 
         {/* Beautiful Footer */}
         <Box sx={{ textAlign: "center", mt: 2.5 }}>
