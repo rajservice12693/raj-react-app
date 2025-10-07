@@ -60,7 +60,10 @@ const ItemCard = ({ item }: { item: any }) => {
     };
   }, [isModalOpen, item.images]);
 
-  const handleImageClick = () => {
+  const handleImageClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Image clicked!', item.itemName || item.materialName);
     if (item.images && item.images.length > 0) {
       setModalImageIndex(currentImageIndex);
       setIsModalOpen(true);
@@ -244,27 +247,38 @@ const ItemCard = ({ item }: { item: any }) => {
         {/* Actual Image Element for Better Centering */}
         {item.images && item.images.length > 0 ? (
           <Box
-            component="img"
-            src={item.images[currentImageIndex]}
-            alt={item.itemName || `${item.materialName} ${item.categoryName}`}
-            onClick={handleImageClick}
             sx={{
-              maxWidth: "100%",
-              maxHeight: "100%",
-              width: "auto",
-              height: "auto",
-              objectFit: "contain",
-              objectPosition: "center center",
               position: "relative",
-              zIndex: 1,
-              transition: "all 0.4s ease",
+              zIndex: 3, // Higher than the ::after pseudo-element
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               cursor: "pointer",
-              "&:hover": {
-                transform: "scale(1.05)",
-                filter: "brightness(1.1)",
-              }
             }}
-          />
+            onClick={handleImageClick}
+          >
+            <Box
+              component="img"
+              src={item.images[currentImageIndex]}
+              alt={item.itemName || `${item.materialName} ${item.categoryName}`}
+              sx={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                width: "auto",
+                height: "auto",
+                objectFit: "contain",
+                objectPosition: "center center",
+                transition: "all 0.4s ease",
+                pointerEvents: "none", // Prevent image from interfering with click
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  filter: "brightness(1.1)",
+                }
+              }}
+            />
+          </Box>
         ) : null}
         {/* Show diamond icon only if no images */}
         {(!item.images || item.images.length === 0) && (
