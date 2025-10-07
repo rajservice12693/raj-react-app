@@ -186,7 +186,7 @@ const ItemCard = ({ item }: { item: any }) => {
       }}
     >
       {/* Jewelry Image Carousel */}
-      <Box className="jewelry-image">
+      <Box className={`jewelry-image ${(!item.images || item.images.length === 0) ? 'no-images' : ''}`}>
         {/* Actual Image Element for Better Centering */}
         {item.images && item.images.length > 0 ? (
           <Box
