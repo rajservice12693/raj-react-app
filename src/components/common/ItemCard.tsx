@@ -551,8 +551,8 @@ const ItemCard = ({ item }: { item: any }) => {
             <Box
               sx={{
                 position: "relative",
-                maxWidth: "60vw",
-                maxHeight: "70vh",
+                maxWidth: "45vw",
+                maxHeight: "55vh",
                 width: "auto",
                 height: "auto",
                 display: "flex",
