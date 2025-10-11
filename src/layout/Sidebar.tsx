@@ -48,7 +48,13 @@ const menuItems: MenuItem[] = [
     label: "Material Entry",
     path: "/admin/dashboard/materialEntry",
     icon: <LayersIcon />,
+  },{
+    label: "Mapping Material Entry",
+    path: "/admin/dashboard/mappingMaterialEntry",
+    icon: <LayersIcon />,
   },
+  
+
   // {
   //   label: "Inventory",
   //   path: "/admin/dashboard/inventory",
