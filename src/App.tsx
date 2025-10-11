@@ -11,6 +11,7 @@ import { AdminDashboard } from "./components/admin/AdminDashboard";
 import ContactPage from "./components/pages/ContactPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import { MappingMaterialEntry } from "./components/pages/MappingMaterialEntry";
 
 function App() {
   return (
@@ -33,7 +34,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            
+
             {/* Protected Admin Routes */}
             <Route
               path="/admin/dashboard"
@@ -67,7 +68,15 @@ function App() {
                 </ProtectedRoute>
               }
             />
-            
+            <Route
+              path="/admin/dashboard/mappingMaterialEntry"
+              element={
+                <ProtectedRoute>
+                  <MappingMaterialEntry />
+                </ProtectedRoute>
+              }
+            />
+
             {/* Catch all route - redirect to home for any undefined routes */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
