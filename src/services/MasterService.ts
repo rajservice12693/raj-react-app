@@ -18,8 +18,18 @@ export class MasterService {
   };
 
   public static addCategory = async (categoryData: any) => {
-    console.log("categoryData", categoryData);
     const response = await axios.post(`${BASE_URL}/addcategory`, categoryData);
+    return response;
+  };
+
+  public static mappingCategoryMaterials = async () => {
+    const response = await axios.get(`${BASE_URL}/mappingMaterials`);
+    return response?.data;
+  };
+
+   public static addMaterialsMapping = async (materialData: any) => {
+    const response = await axios.post(`${BASE_URL}/addMaterialsMapping`, materialData);
+    console.log("API :",response);
     return response;
   };
 }
