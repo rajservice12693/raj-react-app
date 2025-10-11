@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   CircularProgress,
-  TextField,
   Typography,
   Table,
   TableBody,
@@ -15,6 +14,10 @@ import {
   Backdrop,
   Avatar,
   Chip,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import BuildIcon from "@mui/icons-material/Build";
 import CategoryIcon from "@mui/icons-material/Category";
@@ -23,11 +26,14 @@ import type { ICategoryModal } from "../common/modals/ICategoryModal";
 import type { IMaterialModal } from "../common/modals/IMaterialModal";
 import { MasterService } from "../../services/MasterService";
 
-export const MaterialEntry = () => {
+export const MappingMaterialEntry = () => {
   const [validated, setValidated] = useState(false);
   const [categoryList, setCategoryList] = useState<ICategoryModal[]>([]);
+  const [materialList, setMaterialList] = useState<IMaterialModal[]>([]);
+  const [mappingCategoryMaterialsList, setMappingCategoryMaterialsList] =
+    useState<ICategoryModal[]>([]);
   const [materailFormData, setMaterailFormData] = useState({
-    materialName: "",
+    materialId: "",
     categoryId: "",
   });
   const [materialListDisplay, setMaterialListDisplay] = useState<
@@ -35,13 +41,26 @@ export const MaterialEntry = () => {
   >([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const loadCategory = async () => {
+    const category = await MasterService.getCategories();
+    setCategoryList(category);
+  };
+
   const loadMaterials = async () => {
-    const material = await MasterService.getMaterials();
-    setMaterialListDisplay(material);
+    const materials = await MasterService.getMaterials();
+    setMaterialList(materials);
+  };
+
+  const loadMappingCategoryMaterials = async () => {
+    const mappingCategoryMaterials =
+      await MasterService.mappingCategoryMaterials();
+    setMappingCategoryMaterialsList(mappingCategoryMaterials.data);
   };
 
   useEffect(() => {
+    loadMappingCategoryMaterials();
     loadMaterials();
+    loadCategory();
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -49,7 +68,7 @@ export const MaterialEntry = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!materailFormData.categoryId || !materailFormData.materialName.trim()) {
+    if (!materailFormData.categoryId || !materailFormData.materialId) {
       setValidated(true);
       return;
     }
@@ -60,19 +79,17 @@ export const MaterialEntry = () => {
     if (!isConfirm) {
       return;
     }
-
     setIsSubmitting(true);
     try {
-      const response = await MasterService.addMaterial(materailFormData);
+      const response = await MasterService.addMaterialsMapping(
+        materailFormData
+      );
+      console.log(response);
       if (response?.status === 201) {
         toast.success("Material saved successfully.");
-        setMaterailFormData({
-          materialName: "",
-          categoryId: "",
-        });
-        setMaterialListDisplay([]);
         setValidated(false);
-        loadMaterials();
+        loadMappingCategoryMaterials();
+        handleDisplayMaterials(materailFormData.categoryId);
       }
     } catch (error: any) {
       if (error.response?.status === 400) {
@@ -86,24 +103,19 @@ export const MaterialEntry = () => {
     }
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setMaterailFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleCategoryChange = (e: any) => {
     const value = e.target.value as string;
     setMaterailFormData((prev) => ({
       ...prev,
       categoryId: value,
     }));
+    handleDisplayMaterials(value);
+  };
 
-    const filterMaterial = categoryList.find((f) => f.categoryId === value);
+  const handleDisplayMaterials = (value: string) => {
+    const filterMaterial = mappingCategoryMaterialsList.find(
+      (f) => f.categoryId === value
+    );
     const filtered = filterMaterial?.materials || [];
     setMaterialListDisplay(filtered);
   };
@@ -259,7 +271,7 @@ export const MaterialEntry = () => {
               mb: 4,
             }}
           >
-            {/* <FormControl
+            <FormControl
               fullWidth
               required
               error={validated && !materailFormData.categoryId}
@@ -295,22 +307,12 @@ export const MaterialEntry = () => {
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl> */}
+            </FormControl>
 
-            <TextField
+            <FormControl
               fullWidth
               required
-              id="materialName"
-              name="materialName"
-              label="Material Name"
-              value={materailFormData.materialName}
-              onChange={handleChange}
-              error={validated && !materailFormData.materialName.trim()}
-              helperText={
-                validated &&
-                !materailFormData.materialName.trim() &&
-                "Material name is required."
-              }
+              error={validated && !materailFormData.materialId}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "12px",
@@ -321,7 +323,34 @@ export const MaterialEntry = () => {
                   color: "#ffc107",
                 },
               }}
-            />
+            >
+              <InputLabel id="material-label">Material</InputLabel>
+              <Select
+                labelId="material-label"
+                id="materialId"
+                name="materialId"
+                value={materailFormData.materialId}
+                label="Material"
+                onChange={(e) =>
+                  setMaterailFormData((prev) => ({
+                    ...prev,
+                    materialId: e.target.value,
+                  }))
+                }
+              >
+                <MenuItem value="">
+                  <em>-- Select Material --</em>
+                </MenuItem>
+                {materialList.map((material) => (
+                  <MenuItem
+                    key={material.materialId}
+                    value={material.materialId}
+                  >
+                    {material.materialName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
             <Box sx={{ alignSelf: "center" }}>
               <Button
