@@ -530,7 +530,7 @@ const Home = () => {
               )}
 
               {/* Price Range Filter */}
-              <Accordion sx={{ mb: 2, boxShadow: "none" }}>
+              {/* <Accordion sx={{ mb: 2, boxShadow: "none" }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <AttachMoneyIcon sx={{ color: "#ffc107", fontSize: 20 }} />
@@ -560,7 +560,7 @@ const Home = () => {
                     />
                   </Box>
                 </AccordionDetails>
-              </Accordion>
+              </Accordion> */}
 
               {/* Occasion Filter */}
               {/* <Accordion sx={{ mb: 2, boxShadow: "none" }}>
