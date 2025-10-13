@@ -71,7 +71,7 @@ const HeaderGuest: React.FC<HeaderGuestProps> = ({ onLoginClick }) => {
           />
 
           {/* Diamond section */}
-          <Box sx={{ 
+          {/* <Box sx={{ 
             display: "flex", 
             alignItems: "center", 
             gap: "5px",
@@ -81,7 +81,7 @@ const HeaderGuest: React.FC<HeaderGuestProps> = ({ onLoginClick }) => {
           }}>
             <Box component="span" sx={{ fontSize: "18px" }}>💎</Box>
             <Box component="span" sx={{ fontSize: "14px" }}>Diamond</Box>
-          </Box>
+          </Box> */}
 
           {/* Desktop Navigation items */}
           <Box sx={{ 
@@ -92,7 +92,7 @@ const HeaderGuest: React.FC<HeaderGuestProps> = ({ onLoginClick }) => {
               display: 'none'
             }
           }}>
-            {menuItems.map((item) => (
+            {/* {menuItems.map((item) => (
               <Button 
                 key={item}
                 className={activeMenu === item ? "active-menu" : ""}
@@ -132,7 +132,7 @@ const HeaderGuest: React.FC<HeaderGuestProps> = ({ onLoginClick }) => {
               >
                 {item}
               </Button>
-            ))}
+            ))} */}
           </Box>
         </Box>
 
