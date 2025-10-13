@@ -30,16 +30,20 @@ import CategoryIcon from "@mui/icons-material/Category";
 import DiamondIcon from "@mui/icons-material/Diamond";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import SearchIcon from "@mui/icons-material/Search";
+import type { ICategoryModal } from "./common/modals/ICategoryModal";
 
 const Home = () => {
   const [itemList, setItemList] = useState<ItemModal[]>([]);
   const [filteredItems, setFilteredItems] = useState<ItemModal[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  
+  const [mappingMaterials, setMappingMaterials] = useState<ICategoryModal[]>();
   // Filter states
   const [materials, setMaterials] = useState<IMaterialModal[]>([]);
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({ min: 0, max: 100000 });
+  const [priceRange, setPriceRange] = useState<{ min: number; max: number }>({
+    min: 0,
+    max: 100000,
+  });
   // const [selectedOccasion, setSelectedOccasion] = useState<string>("");
   // const [selectedGender, setSelectedGender] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -51,6 +55,14 @@ const Home = () => {
     setFilteredItems(response.data);
   };
 
+  const fetchMappingMaterials = async () => {
+    try {
+      const mappingResponse = await MasterService.mappingCategoryMaterials();
+      setMappingMaterials(mappingResponse.data);
+    } catch (error) {
+      console.error("Failed to load materials:", error);
+    }
+  };
 
   const fetchMaterials = async () => {
     try {
@@ -64,27 +76,50 @@ const Home = () => {
   useEffect(() => {
     fetchAllItems();
     fetchMaterials();
+    fetchMappingMaterials();
   }, []);
 
   // Filter handlers
   const handleCategoryFilter = (category: string) => {
     setSelectedCategory(category);
     applyFilters(category, selectedMaterials, priceRange, searchTerm);
+    applyFilterForMaterialBasedOnCategoryName(category);
+  };
+
+  const applyFilterForMaterialBasedOnCategoryName = (categoryName: string) => {
+    if (categoryName == "All") {
+      fetchMaterials();
+    } else {
+      setMaterials(
+        mappingMaterials?.find((cat) => cat.categoryName === categoryName)
+          ?.materials || []
+      );
+    }
   };
 
   const handleMaterialToggle = (materialId: string) => {
     const newSelectedMaterials = selectedMaterials.includes(materialId)
-      ? selectedMaterials.filter(id => id !== materialId)
+      ? selectedMaterials.filter((id) => id !== materialId)
       : [...selectedMaterials, materialId];
     setSelectedMaterials(newSelectedMaterials);
-    applyFilters(selectedCategory, newSelectedMaterials, priceRange, searchTerm);
+    applyFilters(
+      selectedCategory,
+      newSelectedMaterials,
+      priceRange,
+      searchTerm
+    );
   };
 
-  const handlePriceRangeChange = (field: 'min' | 'max', value: number) => {
-    const newPriceRange = { ...priceRange, [field]: value };
-    setPriceRange(newPriceRange);
-    applyFilters(selectedCategory, selectedMaterials, newPriceRange, searchTerm);
-  };
+  // const handlePriceRangeChange = (field: "min" | "max", value: number) => {
+  //   const newPriceRange = { ...priceRange, [field]: value };
+  //   setPriceRange(newPriceRange);
+  //   applyFilters(
+  //     selectedCategory,
+  //     selectedMaterials,
+  //     newPriceRange,
+  //     searchTerm
+  //   );
+  // };
 
   // const handleOccasionChange = (occasion: string) => {
   //   setSelectedOccasion(occasion);
@@ -106,7 +141,7 @@ const Home = () => {
     setSelectedMaterials([]);
     setPriceRange({ min: 0, max: 100000 });
     setSearchTerm("");
-      setFilteredItems(itemList);
+    setFilteredItems(itemList);
   };
 
   const applyFilters = (
@@ -119,24 +154,27 @@ const Home = () => {
 
     // Category filter
     if (category !== "All") {
-      filtered = filtered.filter(item => item.categoryName === category);
+      filtered = filtered.filter((item) => item.categoryName === category);
     }
 
     // Material filter
     if (materials.length > 0) {
-      filtered = filtered.filter(item => materials.includes(item.materialId.toString()));
+      filtered = filtered.filter((item) =>
+        materials.includes(item.materialId.toString())
+      );
     }
 
     // Price filter
-    filtered = filtered.filter(item => 
-      item.price >= price.min && item.price <= price.max
+    filtered = filtered.filter(
+      (item) => item.price >= price.min && item.price <= price.max
     );
 
     // Search filter
     if (search) {
-      filtered = filtered.filter(item => 
-        item.itemName.toLowerCase().includes(search.toLowerCase()) ||
-        item.description.toLowerCase().includes(search.toLowerCase())
+      filtered = filtered.filter(
+        (item) =>
+          item.itemName.toLowerCase().includes(search.toLowerCase()) ||
+          item.description.toLowerCase().includes(search.toLowerCase())
       );
     }
 
@@ -151,24 +189,26 @@ const Home = () => {
   return (
     <>
       {/* Banner Carousel */}
-      <Box sx={{ 
-        marginTop: "80px", // Account for fixed header height
-        marginLeft: { xs: 2, sm: 3, md: 4 },
-        marginRight: { xs: 2, sm: 3, md: 4 },
-        marginBottom: { xs: 2, sm: 3, md: 4 },
-        padding: 0,
+      <Box
+        sx={{
+          marginTop: "80px", // Account for fixed header height
+          marginLeft: { xs: 2, sm: 3, md: 4 },
+          marginRight: { xs: 2, sm: 3, md: 4 },
+          marginBottom: { xs: 2, sm: 3, md: 4 },
+          padding: 0,
           position: "relative",
-        zIndex: 1,
-        width: "auto",
-        '@media (max-width: 768px)': {
-          marginTop: "70px" // Slightly less on mobile
-        }
-      }}>
+          zIndex: 1,
+          width: "auto",
+          "@media (max-width: 768px)": {
+            marginTop: "70px", // Slightly less on mobile
+          },
+        }}
+      >
         <ImageCarousel
           images={[
             "/images/Banner1.jpg",
-            "/images/Banner2.jpg", 
-            "/images/Banner3.jpg"
+            "/images/Banner2.jpg",
+            "/images/Banner3.jpg",
           ]}
           autoPlay={true}
           autoPlayInterval={6000}
@@ -192,7 +232,7 @@ const Home = () => {
           backdropFilter: "blur(10px)",
         }}
       > */}
-        {/* <Box sx={{ textAlign: "center", mb: 4 }}>
+      {/* <Box sx={{ textAlign: "center", mb: 4 }}>
           <Typography
             variant="h4"
             sx={{
@@ -214,7 +254,7 @@ const Home = () => {
           </Typography>
         </Box> */}
 
-        {/* <Box
+      {/* <Box
           display="flex"
           flexDirection={{ xs: "column", sm: "row" }}
           justifyContent="space-between"
@@ -292,22 +332,32 @@ const Home = () => {
       {/* </Container> */}
 
       {/* Elegant Filter Sidebar and Main Content */}
-      <Box sx={{ 
-        py: { xs: 3, sm: 4, md: 6 },
-        px: { xs: 2, sm: 3, md: 4 },
-        maxWidth: "100%"
-      }}>
-        <Box sx={{ display: "flex", gap: { xs: 2, sm: 3, md: 4 }, flexDirection: { xs: "column", lg: "row" } }}>
-          {/* Elegant Filter Sidebar */}
-          <Paper 
-            elevation={0} 
+      <Box
         sx={{
+          py: { xs: 3, sm: 4, md: 6 },
+          px: { xs: 2, sm: 3, md: 4 },
+          maxWidth: "100%",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            gap: { xs: 2, sm: 3, md: 4 },
+            flexDirection: { xs: "column", lg: "row" },
+          }}
+        >
+          {/* Elegant Filter Sidebar */}
+          <Paper
+            elevation={0}
+            sx={{
               width: { xs: "100%", lg: "320px" },
               height: "fit-content",
-              background: "linear-gradient(135deg, #ffffff 0%, #faf9f7 50%, #f5f2ed 100%)",
-          borderRadius: "24px",
+              background:
+                "linear-gradient(135deg, #ffffff 0%, #faf9f7 50%, #f5f2ed 100%)",
+              borderRadius: "24px",
               border: "1px solid rgba(212, 175, 55, 0.1)",
-              boxShadow: "0 12px 40px rgba(0,0,0,0.08), 0 4px 16px rgba(212, 175, 55, 0.1)",
+              boxShadow:
+                "0 12px 40px rgba(0,0,0,0.08), 0 4px 16px rgba(212, 175, 55, 0.1)",
               position: "relative",
               overflow: "hidden",
               backdropFilter: "blur(10px)",
@@ -318,42 +368,51 @@ const Home = () => {
                 left: 0,
                 right: 0,
                 height: "3px",
-                background: "linear-gradient(90deg, #d4af37 0%, #ffc107 25%, #ff8f00 50%, #ffc107 75%, #d4af37 100%)",
+                background:
+                  "linear-gradient(90deg, #d4af37 0%, #ffc107 25%, #ff8f00 50%, #ffc107 75%, #d4af37 100%)",
                 backgroundSize: "200% 100%",
-                animation: "elegantShimmer 4s ease-in-out infinite"
+                animation: "elegantShimmer 4s ease-in-out infinite",
               },
-              display: { xs: showFilters ? "block" : "none", lg: "block" }
+              display: { xs: showFilters ? "block" : "none", lg: "block" },
             }}
           >
             <Box sx={{ p: { xs: 2.5, sm: 3 } }}>
-              <Box sx={{ 
-                display: "flex", 
-                alignItems: "center", 
-                justifyContent: "space-between",
-          mb: 4,
-                pb: 2,
-                borderBottom: "1px solid rgba(212, 175, 55, 0.1)"
-              }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  mb: 4,
+                  pb: 2,
+                  borderBottom: "1px solid rgba(212, 175, 55, 0.1)",
+                }}
+              >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                  <Box sx={{
-                    p: 1,
-                    borderRadius: "12px",
-                    background: "linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}>
+                  <Box
+                    sx={{
+                      p: 1,
+                      borderRadius: "12px",
+                      background:
+                        "linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <FilterListIcon sx={{ color: "#d4af37", fontSize: 20 }} />
                   </Box>
-                  <Typography variant="h6" sx={{ 
-                    fontWeight: "600", 
-                    color: "#2c3e50",
-                    letterSpacing: "0.02em"
-                  }}>
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: "600",
+                      color: "#2c3e50",
+                      letterSpacing: "0.02em",
+                    }}
+                  >
                     Refine Your Search
                   </Typography>
                 </Box>
-                
+
                 <Button
                   onClick={clearFilters}
                   size="small"
@@ -369,8 +428,8 @@ const Home = () => {
                     "&:hover": {
                       color: "#b8860b",
                       backgroundColor: "rgba(212, 175, 55, 0.05)",
-                      textDecoration: "none"
-                    }
+                      textDecoration: "none",
+                    },
                   }}
                 >
                   Clear All
@@ -379,12 +438,15 @@ const Home = () => {
 
               {/* Elegant Search Filter */}
               <Box sx={{ mb: 4 }}>
-                <Typography variant="subtitle2" sx={{ 
-                  color: "#5d4037", 
-                  fontWeight: "600", 
-                  mb: 1.5,
-                  letterSpacing: "0.02em"
-                }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{
+                    color: "#5d4037",
+                    fontWeight: "600",
+                    mb: 1.5,
+                    letterSpacing: "0.02em",
+                  }}
+                >
                   Search
                 </Typography>
                 <TextField
@@ -405,65 +467,71 @@ const Home = () => {
                       borderRadius: "16px",
                       background: "rgba(255, 255, 255, 0.8)",
                       backdropFilter: "blur(10px)",
-                      "&:hover fieldset": { 
+                      "&:hover fieldset": {
                         borderColor: "#d4af37",
-                        boxShadow: "0 0 0 2px rgba(212, 175, 55, 0.1)"
+                        boxShadow: "0 0 0 2px rgba(212, 175, 55, 0.1)",
                       },
-                      "&.Mui-focused fieldset": { 
+                      "&.Mui-focused fieldset": {
                         borderColor: "#d4af37",
-                        boxShadow: "0 0 0 3px rgba(212, 175, 55, 0.15)"
+                        boxShadow: "0 0 0 3px rgba(212, 175, 55, 0.15)",
                       },
                     },
                     "& .MuiInputBase-input": {
                       color: "#5d4037",
                       "&::placeholder": {
                         color: "#8d6e63",
-                        opacity: 0.8
-                      }
-                    }
+                        opacity: 0.8,
+                      },
+                    },
                   }}
                 />
-                  </Box>
+              </Box>
 
-                  {/* Elegant Category Filter */}
-              <Accordion 
-                defaultExpanded 
-                sx={{ 
-                  mb: 3, 
+              {/* Elegant Category Filter */}
+              <Accordion
+                defaultExpanded
+                sx={{
+                  mb: 3,
                   boxShadow: "none",
                   "&:before": { display: "none" },
                   "&.Mui-expanded": {
-                    margin: "0 0 24px 0"
-                  }
+                    margin: "0 0 24px 0",
+                  },
                 }}
               >
-                <AccordionSummary 
+                <AccordionSummary
                   expandIcon={<ExpandMoreIcon sx={{ color: "#d4af37" }} />}
                   sx={{
                     "&.Mui-expanded": {
-                      minHeight: "48px"
+                      minHeight: "48px",
                     },
                     "& .MuiAccordionSummary-content": {
-                      margin: "12px 0"
-                    }
+                      margin: "12px 0",
+                    },
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                    <Box sx={{
-                      p: 0.5,
-                      borderRadius: "8px",
-                      background: "linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center"
-                    }}>
+                    <Box
+                      sx={{
+                        p: 0.5,
+                        borderRadius: "8px",
+                        background:
+                          "linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
                       <CategoryIcon sx={{ color: "#d4af37", fontSize: 18 }} />
                     </Box>
-                    <Typography variant="subtitle1" sx={{ 
-                      fontWeight: "600",
-                      color: "#2c3e50",
-                      letterSpacing: "0.02em"
-                    }}>
+                    <Typography
+                      variant="subtitle1"
+                      sx={{
+                        fontWeight: "600",
+                        color: "#2c3e50",
+                        letterSpacing: "0.02em",
+                      }}
+                    >
                       Categories
                     </Typography>
                   </Box>
@@ -479,15 +547,21 @@ const Home = () => {
                             borderRadius: "8px",
                             mb: 1,
                             "&.Mui-selected": {
-                              background: "linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 152, 0, 0.1) 100%)",
+                              background:
+                                "linear-gradient(135deg, rgba(255, 193, 7, 0.2) 0%, rgba(255, 152, 0, 0.1) 100%)",
                               "&:hover": {
-                                background: "linear-gradient(135deg, rgba(255, 193, 7, 0.3) 0%, rgba(255, 152, 0, 0.2) 100%)",
-                              }
-                            }
+                                background:
+                                  "linear-gradient(135deg, rgba(255, 193, 7, 0.3) 0%, rgba(255, 152, 0, 0.2) 100%)",
+                              },
+                            },
                           }}
                         >
-                          <ListItemText 
-                            primary={category === "All" ? "✨ All Categories" : `💎 ${category}`} 
+                          <ListItemText
+                            primary={
+                              category === "All"
+                                ? "✨ All Categories"
+                                : `💎 ${category}`
+                            }
                           />
                         </ListItemButton>
                       </ListItem>
@@ -514,8 +588,12 @@ const Home = () => {
                           <FormControlLabel
                             control={
                               <Checkbox
-                                checked={selectedMaterials.includes(material.materialId)}
-                                onChange={() => handleMaterialToggle(material.materialId)}
+                                checked={selectedMaterials.includes(
+                                  material.materialId
+                                )}
+                                onChange={() =>
+                                  handleMaterialToggle(material.materialId)
+                                }
                                 sx={{ color: "#ffc107" }}
                               />
                             }
@@ -615,7 +693,6 @@ const Home = () => {
                   </FormControl>
                 </AccordionDetails>
               </Accordion> */}
-
             </Box>
           </Paper>
 
@@ -628,14 +705,16 @@ const Home = () => {
                 startIcon={<FilterListIcon />}
                 onClick={() => setShowFilters(!showFilters)}
                 sx={{
-                  background: "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
+                  background:
+                    "linear-gradient(135deg, #ffc107 0%, #ff8f00 100%)",
                   color: "#fff",
                   borderRadius: "12px",
                   px: 3,
                   py: 1,
                   "&:hover": {
-                    background: "linear-gradient(135deg, #ff8f00 0%, #ff6f00 100%)",
-                  }
+                    background:
+                      "linear-gradient(135deg, #ff8f00 0%, #ff6f00 100%)",
+                  },
                 }}
               >
                 {showFilters ? "Hide Filters" : "Show Filters"}
@@ -643,15 +722,17 @@ const Home = () => {
             </Box>
 
             {/* Elegant Items Grid */}
-            <Paper 
-              elevation={0} 
-              sx={{ 
-                p: { xs: 2.5, sm: 3, md: 4 }, 
-                background: "linear-gradient(135deg, #ffffff 0%, #faf9f7 50%, #f5f2ed 100%)",
+            <Paper
+              elevation={0}
+              sx={{
+                p: { xs: 2.5, sm: 3, md: 4 },
+                background:
+                  "linear-gradient(135deg, #ffffff 0%, #faf9f7 50%, #f5f2ed 100%)",
                 borderRadius: "24px",
-                boxShadow: "0 12px 40px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(212, 175, 55, 0.1)",
+                boxShadow:
+                  "0 12px 40px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(212, 175, 55, 0.1)",
                 border: "1px solid rgba(212, 175, 55, 0.1)",
-          backdropFilter: "blur(10px)",
+                backdropFilter: "blur(10px)",
                 position: "relative",
                 overflow: "hidden",
                 "&::before": {
@@ -661,43 +742,48 @@ const Home = () => {
                   left: 0,
                   right: 0,
                   height: "2px",
-                  background: "linear-gradient(90deg, #d4af37 0%, #ffc107 25%, #ff8f00 50%, #ffc107 75%, #d4af37 100%)",
+                  background:
+                    "linear-gradient(90deg, #d4af37 0%, #ffc107 25%, #ff8f00 50%, #ffc107 75%, #d4af37 100%)",
                   backgroundSize: "200% 100%",
-                  animation: "elegantShimmer 4s ease-in-out infinite"
-                }
+                  animation: "elegantShimmer 4s ease-in-out infinite",
+                },
               }}
             >
               <Box sx={{ textAlign: "center", mb: 5 }}>
-          <Typography
+                <Typography
                   variant="h4"
-            sx={{
+                  sx={{
                     fontWeight: "400",
-                    background: "linear-gradient(135deg, #d4af37 0%, #ffc107 25%, #ff8f00 50%, #d4af37 75%, #b8860b 100%)",
-              backgroundClip: "text",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+                    background:
+                      "linear-gradient(135deg, #d4af37 0%, #ffc107 25%, #ff8f00 50%, #d4af37 75%, #b8860b 100%)",
+                    backgroundClip: "text",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
                     mb: 2,
                     letterSpacing: "0.02em",
                     textShadow: "0 2px 4px rgba(212, 175, 55, 0.2)",
-            }}
-          >
-            {selectedCategory === "All"
+                  }}
+                >
+                  {selectedCategory === "All"
                     ? "✨ Our Exquisite Collection"
-              : `💎 ${selectedCategory} Collection`}
-          </Typography>
-          <Typography
+                    : `💎 ${selectedCategory} Collection`}
+                </Typography>
+                <Typography
                   variant="body1"
-                  sx={{ 
-                    color: "#8d6e63", 
+                  sx={{
+                    color: "#8d6e63",
                     fontWeight: "400",
                     letterSpacing: "0.02em",
-                    fontSize: "1.1rem"
+                    fontSize: "1.1rem",
                   }}
-          >
-            {filteredItems.length}{" "}
-                  {filteredItems.length === 1 ? "exquisite piece" : "exquisite pieces"} found
-          </Typography>
-                
+                >
+                  {filteredItems.length}{" "}
+                  {filteredItems.length === 1
+                    ? "exquisite piece"
+                    : "exquisite pieces"}{" "}
+                  found
+                </Typography>
+
                 {/* Elegant divider */}
                 <Box
                   sx={{
@@ -712,7 +798,8 @@ const Home = () => {
                     sx={{
                       width: "60px",
                       height: "1px",
-                      background: "linear-gradient(90deg, transparent, #d4af37, transparent)",
+                      background:
+                        "linear-gradient(90deg, transparent, #d4af37, transparent)",
                     }}
                   />
                   <Box
@@ -728,71 +815,71 @@ const Home = () => {
                     sx={{
                       width: "60px",
                       height: "1px",
-                      background: "linear-gradient(90deg, transparent, #d4af37, transparent)",
+                      background:
+                        "linear-gradient(90deg, transparent, #d4af37, transparent)",
                     }}
                   />
                 </Box>
-        </Box>
+              </Box>
 
-        <Grid
-          container
-          spacing={{ xs: 2, sm: 2.5, md: 3 }}
-          sx={{
-            justifyContent: "center",
-            padding: { xs: 1, sm: 2 },
-            maxWidth: "1400px",
-            margin: "0 auto",
-          }}
-        >
-                {filteredItems.length > 0 ? (
-                  filteredItems.map((item) => (
-              <Grid key={item.id}>
-                <Box sx={{ width: "100%", maxWidth: "320px" }}>
-                  <ItemCard item={item} />
-                </Box>
-              </Grid>
-            ))
-          ) : (
-            <Grid>
-              <Box
+              <Grid
+                container
+                spacing={{ xs: 2, sm: 2.5, md: 3 }}
                 sx={{
-                  textAlign: "center",
-                  py: 8,
-                  background:
-                    "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
-                  borderRadius: "20px",
-                  border: "2px dashed #dee2e6",
+                  justifyContent: "center",
+                  padding: { xs: 1, sm: 2 },
+                  maxWidth: "1400px",
+                  margin: "0 auto",
                 }}
               >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: "#6c757d",
-                    mb: 2,
-                    fontWeight: "500",
-                  }}
-                >
-                  🔍 No items found
-                </Typography>
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: "#adb5bd",
-                    fontSize: "0.9rem",
-                  }}
-                >
-                  Try selecting a different category or check back later for new
-                  arrivals
-                </Typography>
-              </Box>
-            </Grid>
-          )}
-        </Grid>
+                {filteredItems.length > 0 ? (
+                  filteredItems.map((item) => (
+                    <Grid key={item.id}>
+                      <Box sx={{ width: "100%", maxWidth: "320px" }}>
+                        <ItemCard item={item} />
+                      </Box>
+                    </Grid>
+                  ))
+                ) : (
+                  <Grid>
+                    <Box
+                      sx={{
+                        textAlign: "center",
+                        py: 8,
+                        background:
+                          "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
+                        borderRadius: "20px",
+                        border: "2px dashed #dee2e6",
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          color: "#6c757d",
+                          mb: 2,
+                          fontWeight: "500",
+                        }}
+                      >
+                        🔍 No items found
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "#adb5bd",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        Try selecting a different category or check back later
+                        for new arrivals
+                      </Typography>
+                    </Box>
+                  </Grid>
+                )}
+              </Grid>
             </Paper>
           </Box>
         </Box>
       </Box>
-      
     </>
   );
 };
