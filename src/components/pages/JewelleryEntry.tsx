@@ -58,6 +58,8 @@ export const JewelleryEntry: React.FC = () => {
   const [materialsList, setMaterialsList] = useState<IMaterialModal[]>([]);
   const [itemsDbList, setItemsDbList] = useState<any[]>([]);
   const [selectedItemId, setSelectedItemId] = useState("");
+  const [mappingCategoryMaterialsList, setMappingCategoryMaterialsList] =
+    useState<ICategoryModal[]>([]);
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -78,6 +80,12 @@ export const JewelleryEntry: React.FC = () => {
   const handleDelete = (id: any) => {
     setSelectedItemId(id);
     setDialogOpen(true);
+  };
+
+  const loadMappingCategoryMaterials = async () => {
+    const mappingCategoryMaterials =
+      await MasterService.mappingCategoryMaterials();
+    setMappingCategoryMaterialsList(mappingCategoryMaterials.data);
   };
 
   const handleToOpenDialog = () => {
@@ -130,6 +138,7 @@ export const JewelleryEntry: React.FC = () => {
 
   useEffect(() => {
     loadInitialMasterData();
+    loadMappingCategoryMaterials();
   }, []);
 
   const handleItemsList = async () => {
@@ -146,22 +155,24 @@ export const JewelleryEntry: React.FC = () => {
     }));
   };
 
+  const handleDisplayMaterials = (value: string) => {
+    const filterMaterial = mappingCategoryMaterialsList.find(
+      (f) => f.categoryId === value
+    );
+    const filtered = filterMaterial?.materials || [];
+    console.log(filtered);
+    setMaterialsList(filtered);
+  };
+
   const handleCategoryChange = (e: any) => {
     const name = e.target.name as string;
     const value = e.target.value as string;
+    handleDisplayMaterials(value);
     setFormData((prev) => ({
       ...prev,
       [name]: value,
       materialId: "", // reset material when category changes
     }));
-
-    // filter materials
-    const selected = categoryList.find((c) => c.categoryId === value);
-    if (selected && selected.materials) {
-      setMaterialsList(selected.materials);
-    } else {
-      setMaterialsList([]);
-    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -254,6 +265,8 @@ export const JewelleryEntry: React.FC = () => {
       images: formDataImageCopy,
     }));
   };
+
+  console.log('material List', materialsList);
 
   return (
     <Box
