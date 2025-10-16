@@ -143,7 +143,6 @@ export const JewelleryEntry: React.FC = () => {
 
   const handleItemsList = async () => {
     const itemsDbList = await Service.items();
-    console.log(itemsDbList);
     setItemsDbList(itemsDbList.data);
   };
 
@@ -160,7 +159,6 @@ export const JewelleryEntry: React.FC = () => {
       (f) => f.categoryId === value
     );
     const filtered = filterMaterial?.materials || [];
-    console.log(filtered);
     setMaterialsList(filtered);
   };
 
@@ -256,17 +254,13 @@ export const JewelleryEntry: React.FC = () => {
   };
 
   const handleRemoveImage = (fileIndex: number) => {
-    console.log("file index ", fileIndex);
     const formDataImageCopy = [...formData.images];
     formDataImageCopy.splice(fileIndex, 1);
-    console.log("files: ", formDataImageCopy);
     setFormData((prev) => ({
       ...prev,
       images: formDataImageCopy,
     }));
   };
-
-  console.log('material List', materialsList);
 
   return (
     <Box

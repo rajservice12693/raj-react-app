@@ -84,7 +84,6 @@ export const MappingMaterialEntry = () => {
       const response = await MasterService.addMaterialsMapping(
         materailFormData
       );
-      console.log(response);
       if (response?.status === 201) {
         toast.success("Material saved successfully.");
         setValidated(false);
@@ -97,7 +96,6 @@ export const MappingMaterialEntry = () => {
       } else {
         toast.error("Something went wrong.");
       }
-      console.log(error);
     } finally {
       setIsSubmitting(false);
     }

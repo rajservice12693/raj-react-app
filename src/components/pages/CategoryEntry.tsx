@@ -45,7 +45,6 @@ export const CategoryEntry = () => {
       try {
         // Add your delete service call here
         // await MasterService.deleteCategory(categoryId);
-        console.log("Deleting category:", categoryId);
         toast.success("Category deleted successfully");
         loadCategoryList();
       } catch (error) {
@@ -369,7 +368,6 @@ export const CategoryEntry = () => {
               count={totalPages}
               page={page + 1}
               onChange={(event, value) => {
-                console.log("Page change event:", event);
                 setPage(value - 1);
               }}
               color="primary"
