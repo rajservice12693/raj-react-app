@@ -80,7 +80,6 @@ export const MaterialEntry = () => {
       } else {
         toast.error("Something went wrong.");
       }
-      console.log(error);
     } finally {
       setIsSubmitting(false);
     }

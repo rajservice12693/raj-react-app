@@ -13,23 +13,19 @@ const Footer = () => {
         break;
       case "About Us":
         // Add about page route when created
-        console.log("About Us clicked");
+       
         break;
       case "Shipping":
         // Add shipping page route when created
-        console.log("Shipping clicked");
         break;
       case "Returns":
         // Add returns page route when created
-        console.log("Returns clicked");
         break;
       case "Privacy":
         // Add privacy page route when created
-        console.log("Privacy clicked");
         break;
       case "Terms":
         // Add terms page route when created
-        console.log("Terms clicked");
         break;
       default:
         break;
