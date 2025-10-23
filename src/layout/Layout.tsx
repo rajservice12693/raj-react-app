@@ -19,6 +19,7 @@ const Layout = ({ children }: any) => {
   };
 
   const handleLogout = () => {
+    console.log('chla kya me?')
     logout();
     navigate("/");
   };
